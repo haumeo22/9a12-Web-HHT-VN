@@ -19,20 +19,43 @@
       overflow-y: scroll;
     }
 
+    /* ===== TOP BAR (STICKY FOR SECTION 1 & 2) ===== */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px 25px;
+      background: rgba(11, 17, 32, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 26px;
+      font-weight: bold;
+      color: white;
+      z-index: 1000;
+      transition: opacity 0.3s;
+    }
+
+    .topbar.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     /* ===== SECTION 1: HERO ===== */
     .hero-section {
       height: 100vh;
       position: relative;
       scroll-snap-align: start;
       background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
+      padding-top: 60px;
     }
 
     .hero-bg {
       position: absolute;
-      top: 0;
+      top: 60px;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 60px);
       object-fit: cover;
       opacity: 0.5;
       z-index: 1;
@@ -40,10 +63,10 @@
 
     .hero-overlay {
       position: absolute;
-      top: 0;
+      top: 60px;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 60px);
       background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
       z-index: 2;
     }
@@ -51,7 +74,7 @@
     .hero-content {
       position: relative;
       z-index: 3;
-      height: 100%;
+      height: calc(100% - 60px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -135,6 +158,43 @@
       scroll-snap-align: start;
       background: white;
       position: relative;
+      padding-top: 60px;
+    }
+
+    /* Main Hero Image with Parallax Effect */
+    .main-hero-container {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .main-hero-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      object-fit: cover;
+      opacity: 0.6;
+      will-change: transform;
+    }
+
+    .main-hero-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #ffd700;
+      z-index: 2;
+    }
+
+    .main-hero-overlay h1 {
+      font-size: 6rem;
+      font-weight: 900;
+      letter-spacing: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
     .top-navbar {
@@ -145,7 +205,7 @@
       justify-content: space-between;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       position: sticky;
-      top: 0;
+      top: 60px;
       z-index: 100;
     }
 
@@ -236,37 +296,6 @@
       font-size: 18px;
     }
 
-    .hero-banner {
-      position: relative;
-      height: 300px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      overflow: hidden;
-    }
-
-    .hero-banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.6;
-    }
-
-    .hero-banner-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #ffd700;
-      z-index: 2;
-    }
-
-    .hero-banner-text h1 {
-      font-size: 6rem;
-      font-weight: 900;
-      letter-spacing: 20px;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
     .main-nav {
       background: white;
       border-bottom: 2px solid #f0f0f0;
@@ -274,7 +303,7 @@
       display: flex;
       justify-content: center;
       position: sticky;
-      top: 80px;
+      top: 140px;
       z-index: 99;
     }
 
@@ -308,8 +337,16 @@
       padding: 40px 20px;
     }
 
+    /* HOT SECTION WITH SIDE IMAGE */
     .hot-section {
       margin-bottom: 40px;
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .hot-events-container {
+      flex: 1;
     }
 
     .hot-header {
@@ -392,17 +429,36 @@
       font-size: 14px;
     }
 
-    .featured-image {
+    /* SIDE IMAGE */
+    .side-image-container {
+      width: 450px;
+      flex-shrink: 0;
+    }
+
+    .side-featured-image {
       width: 100%;
-      max-width: 600px;
-      margin: 30px auto;
-      display: block;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 3px solid #ffd700;
+    }
+
+    @media (max-width: 968px) {
+      .hot-section {
+        flex-direction: column;
+      }
+      
+      .side-image-container {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- FIXED TOP BAR -->
+  <header class="topbar" id="topbar">
+    <span>9A12</span>
+  </header>
+
   <!-- SECTION 1: HERO -->
   <section class="hero-section">
     <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-bg">
@@ -430,6 +486,14 @@
 
   <!-- SECTION 2: MAIN CONTENT -->
   <section class="content-section" id="content">
+    <!-- Main Hero Image with Parallax -->
+    <div class="main-hero-container">
+      <img src="assets/IMG_2873.JPG" alt="Class Banner" class="main-hero-image" id="parallaxImage">
+      <div class="main-hero-overlay">
+        <h1>9A12</h1>
+      </div>
+    </div>
+
     <!-- Top Navbar -->
     <nav class="top-navbar">
       <div class="logo">
@@ -447,14 +511,6 @@
         <button class="settings-btn">⚙</button>
       </div>
     </nav>
-
-    <!-- Hero Banner -->
-    <div class="hero-banner">
-      <img src="assets/IMG_2873.JPG" alt="Class Banner">
-      <div class="hero-banner-text">
-        <h1>9A12</h1>
-      </div>
-    </div>
 
     <!-- Main Navigation -->
     <nav class="main-nav">
@@ -482,40 +538,44 @@
 
     <!-- Content Wrapper -->
     <div class="content-wrapper">
-      <!-- Hot Section -->
+      <!-- Hot Section with Side Image -->
       <div class="hot-section">
-        <div class="hot-header">
-          <span class="fire-icon">🔥</span>
-          <span>HOT!!</span>
-        </div>
-        
-        <div class="events-list">
-          <div class="event-item">
-            <div class="event-date">
-              <span class="day">30</span>
-              <span class="month">/10</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">"Ái Mết trước" - Được giảm 9...</div>
-              <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
-            </div>
+        <div class="hot-events-container">
+          <div class="hot-header">
+            <span class="fire-icon">🔥</span>
+            <span>HOT!!</span>
           </div>
           
-          <div class="event-item">
-            <div class="event-date">
-              <span class="day">28</span>
-              <span class="month">/10</span>
+          <div class="events-list">
+            <div class="event-item">
+              <div class="event-date">
+                <span class="day">30</span>
+                <span class="month">/10</span>
+              </div>
+              <div class="event-details">
+                <div class="event-title">"Ái Mết trước" - Được giảm 9...</div>
+                <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
+              </div>
             </div>
-            <div class="event-details">
-              <div class="event-title">"lật đổ HHT" - Giang Đặng trên...</div>
-              <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
+            
+            <div class="event-item">
+              <div class="event-date">
+                <span class="day">28</span>
+                <span class="month">/10</span>
+              </div>
+              <div class="event-details">
+                <div class="event-title">"lật đổ HHT" - Giang Đặng trên...</div>
+                <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Featured Image -->
-      <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="featured-image">
+        <!-- Side Featured Image -->
+        <div class="side-image-container">
+          <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image">
+        </div>
+      </div>
     </div>
   </section>
 
@@ -539,6 +599,36 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
       });
+    });
+
+    // Parallax effect for main hero image (50% slower)
+    const parallaxImage = document.getElementById('parallaxImage');
+    const mainHeroContainer = document.querySelector('.main-hero-container');
+    
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroTop = mainHeroContainer.offsetTop;
+      const heroHeight = mainHeroContainer.offsetHeight;
+      
+      // Only apply parallax when the hero container is in view
+      if (scrollY > heroTop - window.innerHeight && scrollY < heroTop + heroHeight) {
+        const relativeScroll = scrollY - heroTop;
+        const parallaxOffset = relativeScroll * 0.5; // 50% slower
+        parallaxImage.style.transform = `translateY(${parallaxOffset}px)`;
+      }
+    });
+
+    // Hide topbar after section 2
+    window.addEventListener('scroll', () => {
+      const topbar = document.getElementById('topbar');
+      const contentSection = document.getElementById('content');
+      const contentBottom = contentSection.offsetTop + contentSection.offsetHeight;
+      
+      if (window.scrollY > contentBottom) {
+        topbar.classList.add('hidden');
+      } else {
+        topbar.classList.remove('hidden');
+      }
     });
   </script>
 </body>
