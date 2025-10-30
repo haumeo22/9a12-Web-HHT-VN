@@ -1,0 +1,233 @@
+/* styles.css - basic reset */
+:root{
+  --bg: #0b1020;
+  --accent: #f6b93b;
+  --muted: #dce1e8;
+  --card-bg: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--muted);
+  background: linear-gradient(180deg,#071028 0%, #071427 55%, #081227 100%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow:hidden;
+}
+
+/* Site wrapper: vertical scroll with snap */
+.site{
+  height:100vh;
+  width:100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+/* Each "page" */
+.section{
+  height:100vh;
+  width:100%;
+  scroll-snap-align: start;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  padding:40px;
+}
+
+/* HERO */
+.hero{
+  background:
+    radial-gradient(closest-side at 20% 30%, rgba(246,185,59,0.05), transparent 10%),
+    radial-gradient(closest-side at 80% 70%, rgba(255,255,255,0.02), transparent 10%),
+    transparent;
+}
+
+/* subtle animated particles (CSS only) */
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03) 0 2px, transparent 2px),
+    radial-gradient(circle at 50% 30%, rgba(246,185,59,0.02) 0 2px, transparent 2px),
+    radial-gradient(circle at 80% 75%, rgba(255,255,255,0.02) 0 2px, transparent 2px);
+  background-size: 100% 100%, 140% 140%, 120% 120%;
+  animation: floatBG 12s linear infinite;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes floatBG{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+  100%{transform:translateY(0)}
+}
+
+.hero-content{
+  text-align:center;
+  z-index:2;
+  max-width:900px;
+  margin: 0 auto;
+}
+
+/* Logo styling */
+.logo-wrap{
+  width:170px;
+  height:170px;
+  margin:0 auto 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.logo{
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+
+/* emblem circle */
+.emblem-bg{ fill: var(--accent); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+.emblem-text{
+  font-family: Inter, sans-serif;
+  font-weight:700;
+  font-size:24px;
+  fill: #081226;
+}
+
+/* spinning ring: animated with CSS transform rotate */
+.ring circle{
+  stroke: linear-gradient(45deg, #fff, var(--accent));
+  stroke-width:6;
+  stroke-linecap:round;
+  fill: none;
+  stroke: rgba(246,185,59,0.25);
+  stroke-dasharray: 20 260;
+  transform-origin: 100px 100px;
+  animation: spin 8s linear infinite;
+}
+
+/* small easing variation on hover / focus */
+.logo-wrap:hover .ring circle{ animation-duration:6s; }
+
+/* title + subtitle */
+.hero-title{
+  font-size: clamp(28px,5vw,48px);
+  margin-top: 6px;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.hero-sub{
+  color: rgba(255,255,255,0.8);
+  margin-top: 8px;
+  opacity:0.9;
+}
+
+/* Enter button */
+.enter-btn{
+  margin-top:18px;
+  padding:10px 18px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--muted);
+  cursor:pointer;
+  backdrop-filter: blur(6px);
+  transition: transform .18s ease, background .18s ease;
+}
+.enter-btn:active{ transform: translateY(1px) }
+
+/* scroll indicator (bottom center) */
+.scroll-indicator{
+  position:absolute;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  z-index:3;
+}
+.scroll-indicator .arrow{
+  display:block;
+  width:28px;height:28px;
+  border-left:3px solid rgba(255,255,255,0.85);
+  border-bottom:3px solid rgba(255,255,255,0.85);
+  transform:rotate(-45deg);
+  margin:0 auto;
+  animation: bounce 1.6s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%{transform:translateY(0) rotate(-45deg)}
+  50%{transform:translateY(8px) rotate(-45deg)}
+  100%{transform:translateY(0) rotate(-45deg)}
+}
+
+/* content section (where your original page starts) */
+.content{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:72px;
+  padding-bottom:72px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+}
+
+/* simple inner container */
+.container{
+  width:min(1100px,92%);
+  margin:0 auto;
+  color:var(--muted);
+}
+
+/* nav */
+.topnav{ display:flex; gap:18px; margin-bottom:18px }
+.nav-link{
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  background:transparent;
+  color:rgba(255,255,255,0.85);
+}
+.nav-link.active{ background: var(--card-bg); color: white }
+
+/* card grid */
+.card-grid{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:14px;
+}
+.card{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:14px;
+  min-height:110px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+}
+
+/* accessibility respect: reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .ring circle,
+  .scroll-indicator .arrow,
+  .hero::before,
+  .logo-wrap .ring circle{
+    animation: none !important;
+  }
+  .site{ scroll-behavior: auto }
+}
+
+/* spin keyframes */
+@keyframes spin{
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* responsive tweaks */
+@media (max-width:560px){
+  .logo-wrap{ width:120px;height:120px }
+  .hero-title{ font-size:22px }
+  .hero-sub{ font-size:14px }
+}
