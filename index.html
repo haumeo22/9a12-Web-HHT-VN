@@ -14,12 +14,10 @@
     body {
       font-family: 'Arial', sans-serif;
       overflow-x: hidden;
-      scroll-snap-type: y mandatory;
-      height: 100vh;
-      overflow-y: scroll;
+      scroll-behavior: smooth;
     }
 
-    /* ===== TOP BAR (STICKY FOR SECTION 1 & 2) ===== */
+    /* ===== TOP BAR (STICKY) ===== */
     .topbar {
       position: fixed;
       top: 0;
@@ -41,24 +39,28 @@
       pointer-events: none;
     }
 
-    /* ===== SECTION 1: HERO ===== */
+    /* ===== SECTION 1: HERO (Full Screen) ===== */
     .hero-section {
       height: 100vh;
       position: relative;
-      scroll-snap-align: start;
-      background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
       padding-top: 60px;
+      overflow: hidden;
     }
 
-    .hero-bg {
+    .hero-image-container {
       position: absolute;
       top: 60px;
       left: 0;
       width: 100%;
       height: calc(100% - 60px);
+      overflow: hidden;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      opacity: 0.5;
-      z-index: 1;
+      filter: brightness(0.7);
     }
 
     .hero-overlay {
@@ -67,32 +69,12 @@
       left: 0;
       width: 100%;
       height: calc(100% - 60px);
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
-      z-index: 2;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 3;
-      height: calc(100% - 60px);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-    }
-
-    .hero-title-wrapper {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .hero-subtitle {
-      color: #ffd700;
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 8px;
-      margin-bottom: 15px;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      z-index: 2;
     }
 
     .hero-title {
@@ -103,6 +85,7 @@
                    0 0 60px rgba(255, 215, 0, 0.4);
       letter-spacing: 30px;
       animation: glow 2s ease-in-out infinite alternate;
+      margin-bottom: 20px;
     }
 
     @keyframes glow {
@@ -118,10 +101,10 @@
       text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
     }
 
-    .star-1 { top: 20%; left: 15%; animation-delay: 0s; }
-    .star-2 { top: 25%; right: 15%; animation-delay: 0.5s; }
-    .star-3 { bottom: 25%; left: 20%; animation-delay: 1s; }
-    .star-4 { bottom: 30%; right: 20%; animation-delay: 1.5s; }
+    .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
+    .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
+    .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
+    .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
 
     @keyframes twinkle {
       0%, 100% { opacity: 0.6; transform: scale(1); }
@@ -131,72 +114,70 @@
     .scroll-indicator {
       position: absolute;
       bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
       color: white;
       font-size: 14px;
       text-align: center;
       cursor: pointer;
       animation: bounce 2s infinite;
-      z-index: 4;
+      z-index: 3;
     }
 
     .scroll-indicator svg {
       width: 30px;
       height: 30px;
       margin-top: 8px;
+      fill: white;
     }
 
     @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(10px); }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
     }
 
-    /* ===== SECTION 2: MAIN CONTENT ===== */
+    /* ===== SECTION 2: MAIN CONTENT (Scaled Down Hero) ===== */
     .content-section {
       min-height: 100vh;
-      scroll-snap-align: start;
       background: white;
       position: relative;
       padding-top: 60px;
     }
 
-    /* Main Hero Image with Parallax Effect */
-    .main-hero-container {
+    /* Scaled Down Hero Banner */
+    .banner-container {
       position: relative;
-      height: 400px;
+      height: 300px;
       overflow: hidden;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
-    .main-hero-image {
+    .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+
+    .banner-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 120%;
-      object-fit: cover;
-      opacity: 0.6;
-      will-change: transform;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
     }
 
-    .main-hero-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #ffd700;
-      z-index: 2;
-    }
-
-    .main-hero-overlay h1 {
-      font-size: 6rem;
+    .banner-title {
+      font-size: 5rem;
       font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 
+                   0 0 40px rgba(255, 215, 0, 0.4);
       letter-spacing: 20px;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
+    /* Navigation Bar */
     .top-navbar {
       background: white;
       padding: 15px 30px;
@@ -233,6 +214,7 @@
       flex: 1;
       max-width: 400px;
       margin: 0 30px;
+      position: relative;
     }
 
     .search-bar input {
@@ -265,12 +247,14 @@
       cursor: pointer;
       transition: all 0.3s;
       font-size: 14px;
+      background: white;
     }
 
     .hotline-btn {
       background: #ff6b6b;
       color: white;
       border-color: #ff6b6b;
+      line-height: 1.3;
     }
 
     .hotline-btn:hover {
@@ -279,7 +263,6 @@
     }
 
     .login-btn {
-      background: white;
       color: #ffd700;
       border-color: #ffd700;
     }
@@ -290,7 +273,6 @@
     }
 
     .settings-btn {
-      background: white;
       border-color: #ccc;
       padding: 10px 15px;
       font-size: 18px;
@@ -311,6 +293,8 @@
       display: flex;
       list-style: none;
       gap: 5px;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-item {
@@ -337,7 +321,7 @@
       padding: 40px 20px;
     }
 
-    /* HOT SECTION WITH SIDE IMAGE */
+    /* HOT SECTION */
     .hot-section {
       margin-bottom: 40px;
       display: flex;
@@ -442,13 +426,38 @@
       border: 3px solid #ffd700;
     }
 
+    /* ===== SECTION 3: BLANK ===== */
+    .blank-section {
+      min-height: 100vh;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 2rem;
+    }
+
     @media (max-width: 968px) {
+      .hero-title {
+        font-size: 5rem;
+        letter-spacing: 15px;
+      }
+
+      .banner-title {
+        font-size: 3rem;
+        letter-spacing: 10px;
+      }
+
       .hot-section {
         flex-direction: column;
       }
       
       .side-image-container {
         width: 100%;
+      }
+
+      .top-actions {
+        flex-wrap: wrap;
       }
     }
   </style>
@@ -459,38 +468,36 @@
     <span>9A12</span>
   </header>
 
-  <!-- SECTION 1: HERO -->
+  <!-- SECTION 1: HERO (Full Screen) -->
   <section class="hero-section">
-    <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-bg">
-    <div class="hero-overlay"></div>
+    <div class="hero-image-container">
+      <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-image">
+    </div>
     
-    <div class="hero-content">
+    <div class="hero-overlay">
       <div class="star-decoration star-1">✦</div>
       <div class="star-decoration star-2">✦</div>
       <div class="star-decoration star-3">✦</div>
       <div class="star-decoration star-4">✦</div>
       
-      <div class="hero-title-wrapper">
-        <div class="hero-subtitle">Trang web</div>
-        <h1 class="hero-title">9A12</h1>
+      <h1 class="hero-title">9A12</h1>
+      
+      <div class="scroll-indicator" onclick="scrollToContent()">
+        <div>Cuộn xuống</div>
+        <svg viewBox="0 0 24 24">
+          <path d="M7 10l5 5 5-5z"/>
+        </svg>
       </div>
-    </div>
-    
-    <div class="scroll-indicator" onclick="scrollToContent()">
-      <div>Cuộn xuống</div>
-      <svg fill="white" viewBox="0 0 24 24">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
     </div>
   </section>
 
-  <!-- SECTION 2: MAIN CONTENT -->
+  <!-- SECTION 2: MAIN CONTENT (Same Image, Scaled Down) -->
   <section class="content-section" id="content">
-    <!-- Main Hero Image with Parallax -->
-    <div class="main-hero-container">
-      <img src="assets/IMG_2873.JPG" alt="Class Banner" class="main-hero-image" id="parallaxImage">
-      <div class="main-hero-overlay">
-        <h1>9A12</h1>
+    <!-- Scaled Down Banner (Same Image as Hero) -->
+    <div class="banner-container">
+      <img src="assets/IMG_2873.JPG" alt="Class 9A12 Banner" class="banner-image">
+      <div class="banner-overlay">
+        <h1 class="banner-title">9A12</h1>
       </div>
     </div>
 
@@ -579,6 +586,11 @@
     </div>
   </section>
 
+  <!-- SECTION 3: BLANK (For Future Content) -->
+  <section class="blank-section" id="section3">
+    <p>Section 3 - Coming Soon</p>
+  </section>
+
   <script>
     function scrollToContent() {
       document.getElementById('content').scrollIntoView({ 
@@ -589,7 +601,12 @@
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        scrollToContent();
+        const heroSection = document.querySelector('.hero-section');
+        const heroBottom = heroSection.offsetHeight;
+        
+        if (window.scrollY < heroBottom) {
+          scrollToContent();
+        }
       }
     });
 
@@ -601,30 +618,13 @@
       });
     });
 
-    // Parallax effect for main hero image (50% slower)
-    const parallaxImage = document.getElementById('parallaxImage');
-    const mainHeroContainer = document.querySelector('.main-hero-container');
-    
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const heroTop = mainHeroContainer.offsetTop;
-      const heroHeight = mainHeroContainer.offsetHeight;
-      
-      // Only apply parallax when the hero container is in view
-      if (scrollY > heroTop - window.innerHeight && scrollY < heroTop + heroHeight) {
-        const relativeScroll = scrollY - heroTop;
-        const parallaxOffset = relativeScroll * 0.5; // 50% slower
-        parallaxImage.style.transform = `translateY(${parallaxOffset}px)`;
-      }
-    });
-
-    // Hide topbar after section 2
+    // Hide topbar when entering section 3
     window.addEventListener('scroll', () => {
       const topbar = document.getElementById('topbar');
-      const contentSection = document.getElementById('content');
-      const contentBottom = contentSection.offsetTop + contentSection.offsetHeight;
+      const section3 = document.getElementById('section3');
+      const section3Top = section3.offsetTop;
       
-      if (window.scrollY > contentBottom) {
+      if (window.scrollY >= section3Top - 100) {
         topbar.classList.add('hidden');
       } else {
         topbar.classList.remove('hidden');
