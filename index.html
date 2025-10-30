@@ -1,10 +1,68 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="vi">
 <head>
-<title>Class Website</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Class 9A12 — Welcome</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Class introduction website — single page, section-snap, animated intro." />
 </head>
 <body>
-<h1>Hello World</h1>
-<p>Class introduction website loading…</p>
+  <main class="site">
+    <!--------------------------------------------------- SECTION 1: Intro / Splash ------------------------------------------------->
+    <section id="hero" class="section hero" aria-label="Intro">
+      <div class="hero-content">
+        <!--- Inline SVG logo: easy to tweak, scales perfectly -->
+        <div class="logo-wrap" aria-hidden="true">
+          <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Class Logo">
+            <!-- spinning ring -->
+            <g class="ring">
+              <circle cx="100" cy="100" r="72" stroke="none" fill="none" />
+            </g>
+
+            <!-- center emblem ----->
+            <g class="emblem" transform="translate(100,100)">
+              <circle cx="0" cy="0" r="36" class="emblem-bg" />
+              <text class="emblem-text" x="0" y="8" text-anchor="middle">9A12</text>
+            </g>
+          </svg>
+        </div>
+
+        <h1 class="hero-title">Lớp 9A12</h1>
+        <p class="hero-sub">Chào mừng — nơi chúng ta làm việc, chơi, và thỉnh thoảng học.</p>
+
+        <button class="enter-btn" id="enterBtn" aria-label="Enter website">Enter</button>
+      </div>
+
+      <!-- subtle scroll indicator -->
+      <button class="scroll-indicator" id="scrollDown" aria-label="Scroll to next section">
+        <span class="arrow"></span>
+      </button>
+    </section>
+
+    <!------------------------------------------------------- SECTION 2: Starter of original page (replace with your real content) ----------------------------------------------------->
+    <section id="content" class="section content" aria-label="Main content">
+      <div class="container">
+        <nav class="topnav">
+          <a class="nav-link active">Trang Chủ</a>
+          <a class="nav-link">Hoạt động</a>
+          <a class="nav-link">Thành viên</a>
+          <a class="nav-link">Liên hệ</a>
+        </nav>
+
+        <h2>Giới thiệu lớp</h2>
+        <p>This is the start of your original page layout. Replace this block with the content you showed me earlier (cards, images, announcements, etc.).</p>
+
+        <!-- sample card grid -->
+        <div class="card-grid">
+          <article class="card"><h3>Hoạt động</h3><p>Project, field trips, game nights.</p></article>
+          <article class="card"><h3>Thành tích</h3><p>School awards and competitions.</p></article>
+          <article class="card"><h3>Thành viên</h3><p>Photos & fun facts.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
