@@ -131,12 +131,17 @@
       height: calc(100vh - 80px);
       transition: height 0.3s ease-out;
       overflow: hidden;
-      z-index: 1;
+      z-index: 10;
     }
 
     .hero-container.shrunk {
       height: 300px;
     }
+
+    .hero-container.fixed-height {
+      height: 300px;
+    }
+
 
     .hero-image-wrapper {
       position: relative;
