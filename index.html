@@ -14,180 +14,27 @@
     body {
       font-family: 'Arial', sans-serif;
       overflow-x: hidden;
-      scroll-behavior: smooth;
     }
 
-    /* ===== TOP BAR (STICKY) ===== */
-    .topbar {
+    /* ===== TOP NAVBAR (STICKY FOR SECTION 1 & 2) ===== */
+    .top-navbar {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      padding: 15px 25px;
-      background: rgba(11, 17, 32, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 26px;
-      font-weight: bold;
-      color: white;
-      z-index: 1000;
-      transition: opacity 0.3s;
-    }
-
-    .topbar.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* ===== SECTION 1: HERO (Full Screen) ===== */
-    .hero-section {
-      height: 100vh;
-      position: relative;
-      padding-top: 60px;
-      overflow: hidden;
-    }
-
-    .hero-image-container {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 60px);
-      overflow: hidden;
-    }
-
-    .hero-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.7);
-    }
-
-    .hero-overlay {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 60px);
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-
-    .hero-title {
-      font-size: 9rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 
-                   0 0 60px rgba(255, 215, 0, 0.4);
-      letter-spacing: 30px;
-      animation: glow 2s ease-in-out infinite alternate;
-      margin-bottom: 20px;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
-      to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
-    }
-
-    .star-decoration {
-      position: absolute;
-      color: #ffd700;
-      font-size: 3rem;
-      animation: twinkle 2s ease-in-out infinite;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-    }
-
-    .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
-    .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
-    .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
-    .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 30px;
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      cursor: pointer;
-      animation: bounce 2s infinite;
-      z-index: 3;
-    }
-
-    .scroll-indicator svg {
-      width: 30px;
-      height: 30px;
-      margin-top: 8px;
-      fill: white;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-
-    /* ===== SECTION 2: MAIN CONTENT (Scaled Down Hero) ===== */
-    .content-section {
-      min-height: 100vh;
-      background: white;
-      position: relative;
-      padding-top: 60px;
-    }
-
-    /* Scaled Down Hero Banner */
-    .banner-container {
-      position: relative;
-      height: 300px;
-      overflow: hidden;
-    }
-
-    .banner-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.7);
-    }
-
-    .banner-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
-    }
-
-    .banner-title {
-      font-size: 5rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 
-                   0 0 40px rgba(255, 215, 0, 0.4);
-      letter-spacing: 20px;
-    }
-
-    /* Navigation Bar */
-    .top-navbar {
       background: white;
       padding: 15px 30px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 60px;
-      z-index: 100;
+      z-index: 1000;
+      transition: opacity 0.3s;
+    }
+
+    .top-navbar.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .logo {
@@ -214,7 +61,6 @@
       flex: 1;
       max-width: 400px;
       margin: 0 30px;
-      position: relative;
     }
 
     .search-bar input {
@@ -278,6 +124,135 @@
       font-size: 18px;
     }
 
+    /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
+    .hero-container {
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      transition: height 0.3s ease-out;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-container.shrunk {
+      height: 300px;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-title {
+      font-size: 9rem;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 
+                   0 0 60px rgba(255, 215, 0, 0.4);
+      letter-spacing: 30px;
+      animation: glow 2s ease-in-out infinite alternate;
+      transition: font-size 0.3s ease-out, letter-spacing 0.3s ease-out;
+    }
+
+    .hero-container.shrunk .hero-title {
+      font-size: 5rem;
+      letter-spacing: 20px;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
+      to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
+    }
+
+    .star-decoration {
+      position: absolute;
+      color: #ffd700;
+      font-size: 3rem;
+      animation: twinkle 2s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      transition: opacity 0.3s;
+    }
+
+    .hero-container.shrunk .star-decoration {
+      opacity: 0;
+    }
+
+    .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
+    .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
+    .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
+    .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+      animation: bounce 2s infinite;
+      transition: opacity 0.3s;
+    }
+
+    .hero-container.shrunk .scroll-indicator {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scroll-indicator svg {
+      width: 30px;
+      height: 30px;
+      margin-top: 8px;
+      fill: white;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    /* ===== SECTION 1: HERO SPACER ===== */
+    .hero-section {
+      height: calc(100vh - 80px);
+      position: relative;
+    }
+
+    /* ===== SECTION 2: MAIN CONTENT ===== */
+    .content-section {
+      min-height: 100vh;
+      background: white;
+      position: relative;
+      z-index: 2;
+      margin-top: -1px;
+    }
+
+    /* Main Navigation */
     .main-nav {
       background: white;
       border-bottom: 2px solid #f0f0f0;
@@ -285,8 +260,13 @@
       display: flex;
       justify-content: center;
       position: sticky;
-      top: 140px;
-      z-index: 99;
+      top: 380px;
+      z-index: 100;
+      transition: top 0.3s ease-out;
+    }
+
+    .hero-container.shrunk ~ .content-section .main-nav {
+      top: 380px;
     }
 
     .nav-items {
@@ -307,6 +287,7 @@
       color: #555;
       transition: all 0.3s;
       border-bottom: 3px solid transparent;
+      white-space: nowrap;
     }
 
     .nav-item:hover, .nav-item.active {
@@ -439,13 +420,13 @@
 
     @media (max-width: 968px) {
       .hero-title {
-        font-size: 5rem;
-        letter-spacing: 15px;
+        font-size: 5rem !important;
+        letter-spacing: 15px !important;
       }
 
-      .banner-title {
-        font-size: 3rem;
-        letter-spacing: 10px;
+      .hero-container.shrunk .hero-title {
+        font-size: 3rem !important;
+        letter-spacing: 10px !important;
       }
 
       .hot-section {
@@ -456,69 +437,59 @@
         width: 100%;
       }
 
-      .top-actions {
-        flex-wrap: wrap;
+      .nav-item {
+        padding: 15px 20px;
+        font-size: 14px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- FIXED TOP BAR -->
-  <header class="topbar" id="topbar">
-    <span>9A12</span>
-  </header>
-
-  <!-- SECTION 1: HERO (Full Screen) -->
-  <section class="hero-section">
-    <div class="hero-image-container">
-      <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-image">
+  <!-- TOP NAVBAR (STICKY) -->
+  <nav class="top-navbar" id="topNavbar">
+    <div class="logo">
+      <div class="logo-icon">⭐</div>
+      <span>9A12</span>
     </div>
     
-    <div class="hero-overlay">
-      <div class="star-decoration star-1">✦</div>
-      <div class="star-decoration star-2">✦</div>
-      <div class="star-decoration star-3">✦</div>
-      <div class="star-decoration star-4">✦</div>
-      
-      <h1 class="hero-title">9A12</h1>
-      
-      <div class="scroll-indicator" onclick="scrollToContent()">
-        <div>Cuộn xuống</div>
-        <svg viewBox="0 0 24 24">
-          <path d="M7 10l5 5 5-5z"/>
-        </svg>
+    <div class="search-bar">
+      <input type="text" placeholder="what do you want to find">
+    </div>
+    
+    <div class="top-actions">
+      <button class="hotline-btn">☎ Hotline<br>0123456789</button>
+      <button class="login-btn">👤 Đăng nhập/ Đăng Ký</button>
+      <button class="settings-btn">⚙</button>
+    </div>
+  </nav>
+
+  <!-- HERO CONTAINER (STICKY, SHRINKS ON SCROLL) -->
+  <div class="hero-container" id="heroContainer">
+    <div class="hero-image-wrapper">
+      <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-image">
+      <div class="hero-overlay">
+        <div class="star-decoration star-1">✦</div>
+        <div class="star-decoration star-2">✦</div>
+        <div class="star-decoration star-3">✦</div>
+        <div class="star-decoration star-4">✦</div>
+        
+        <h1 class="hero-title">9A12</h1>
+        
+        <div class="scroll-indicator" onclick="scrollToContent()">
+          <div>Cuộn xuống</div>
+          <svg viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- SECTION 2: MAIN CONTENT (Same Image, Scaled Down) -->
+  <!-- SECTION 1: HERO SPACER -->
+  <section class="hero-section" id="heroSection"></section>
+
+  <!-- SECTION 2: MAIN CONTENT -->
   <section class="content-section" id="content">
-    <!-- Scaled Down Banner (Same Image as Hero) -->
-    <div class="banner-container">
-      <img src="assets/IMG_2873.JPG" alt="Class 9A12 Banner" class="banner-image">
-      <div class="banner-overlay">
-        <h1 class="banner-title">9A12</h1>
-      </div>
-    </div>
-
-    <!-- Top Navbar -->
-    <nav class="top-navbar">
-      <div class="logo">
-        <div class="logo-icon">⭐</div>
-        <span>9A12</span>
-      </div>
-      
-      <div class="search-bar">
-        <input type="text" placeholder="what do you want to find">
-      </div>
-      
-      <div class="top-actions">
-        <button class="hotline-btn">☎ Hotline<br>0123456789</button>
-        <button class="login-btn">👤 Đăng nhập/ Đăng Ký</button>
-        <button class="settings-btn">⚙</button>
-      </div>
-    </nav>
-
     <!-- Main Navigation -->
     <nav class="main-nav">
       <ul class="nav-items">
@@ -586,49 +557,64 @@
     </div>
   </section>
 
-  <!-- SECTION 3: BLANK (For Future Content) -->
+  <!-- SECTION 3: BLANK -->
   <section class="blank-section" id="section3">
     <p>Section 3 - Coming Soon</p>
   </section>
 
   <script>
+    const heroContainer = document.getElementById('heroContainer');
+    const heroSection = document.getElementById('heroSection');
+    const topNavbar = document.getElementById('topNavbar');
+    const section3 = document.getElementById('section3');
+
     function scrollToContent() {
       document.getElementById('content').scrollIntoView({ 
         behavior: 'smooth' 
       });
     }
 
+    // Shrink hero on scroll
+    let lastScrollY = 0;
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroSectionBottom = heroSection.offsetTop + heroSection.offsetHeight;
+      
+      // Shrink hero when scrolling past section 1
+      if (scrollY > heroSectionBottom - 100) {
+        heroContainer.classList.add('shrunk');
+      } else {
+        heroContainer.classList.remove('shrunk');
+      }
+
+      // Hide navbar when entering section 3
+      const section3Top = section3.offsetTop;
+      if (scrollY >= section3Top - 100) {
+        topNavbar.classList.add('hidden');
+      } else {
+        topNavbar.classList.remove('hidden');
+      }
+
+      lastScrollY = scrollY;
+    });
+
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        const heroSection = document.querySelector('.hero-section');
-        const heroBottom = heroSection.offsetHeight;
+        const heroSectionBottom = heroSection.offsetTop + heroSection.offsetHeight;
         
-        if (window.scrollY < heroBottom) {
+        if (window.scrollY < heroSectionBottom) {
           scrollToContent();
         }
       }
     });
 
-    // Add active state to nav items
+    // Nav item active state
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', function() {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
       });
-    });
-
-    // Hide topbar when entering section 3
-    window.addEventListener('scroll', () => {
-      const topbar = document.getElementById('topbar');
-      const section3 = document.getElementById('section3');
-      const section3Top = section3.offsetTop;
-      
-      if (window.scrollY >= section3Top - 100) {
-        topbar.classList.add('hidden');
-      } else {
-        topbar.classList.remove('hidden');
-      }
     });
   </script>
 </body>
