@@ -606,18 +606,25 @@ window.addEventListener('resize', refreshNavHeight);
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
 
-  // heroSection bottom position
-  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+  // Get viewport height
+  const viewportHeight = window.innerHeight;
+  const shrinkStart = viewportHeight * 0.3; // Start shrinking at 30% of viewport
+  const shrinkEnd = viewportHeight * 0.7;   // Fully shrunk at 70% of viewport
 
-  // 1) if we've scrolled *past* the hero section, stop the hero being sticky
-  //    (heroContainer will become relative and use compact height)
-  if (scrollY >= heroBottom - 80) {
+  // 1) Shrink hero as user scrolls down
+  if (scrollY >= shrinkStart && scrollY < shrinkEnd) {
+    heroContainer.classList.add('shrunk');
+    heroContainer.classList.remove('stopped');
+  } else if (scrollY >= shrinkEnd) {
+    // Once fully scrolled past, stop it from being sticky
     heroContainer.classList.add('stopped');
+    heroContainer.classList.add('shrunk');
   } else {
+    heroContainer.classList.remove('shrunk');
     heroContainer.classList.remove('stopped');
   }
 
-  // 2) hide/show topNavbar as before (you used section3 threshold)
+  // 2) hide/show topNavbar when reaching section 3
   const section3Top = section3.offsetTop;
   if (scrollY >= section3Top - 100) {
     topNavbar.classList.add('hidden');
@@ -625,11 +632,10 @@ window.addEventListener('scroll', () => {
     topNavbar.classList.remove('hidden');
   }
 
-  // 3) when topNavbar is hidden, make main-nav fixed to top so it "takes over"
+  // 3) when topNavbar is hidden, make main-nav fixed to top
   if (topNavbar.classList.contains('hidden')) {
     if (!mainNav.classList.contains('fixed')) {
       mainNav.classList.add('fixed');
-      // add content padding class to avoid content jump; you can remove if not needed
       contentSection.classList.add('nav-fixed-padding');
     }
   } else {
@@ -637,7 +643,6 @@ window.addEventListener('scroll', () => {
     contentSection.classList.remove('nav-fixed-padding');
   }
 });
-
 
     // Nav item active state
     document.querySelectorAll('.nav-item').forEach(item => {
