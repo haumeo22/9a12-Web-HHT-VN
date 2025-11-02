@@ -257,21 +257,25 @@
     }
 
     /* Main Navigation */
-    .main-nav {
-      background: white;
-      border-bottom: 2px solid #f0f0f0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      position: sticky;
-      top: 380px;
-      z-index: 100;
-      transition: top 0.3s ease-out;
-    }
-
-    .hero-container.shrunk ~ .content-section .main-nav {
-      top: 380px;
-    }
+.main-nav {
+  background: white;
+  border-bottom: 2px solid #f0f0f0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 80px; /* start below top nav */
+  z-index: 999;
+  transition: top 0.3s ease-out;
+}
+/* when hero shrinks, it stays where it is */
+.hero-container.shrunk ~ .content-section .main-nav {
+  top: 80px;
+}
+    /* when top navbar hidden = nav moves up */
+.top-navbar.hidden + .hero-container + .hero-section + .content-section .main-nav {
+  top: 0;
+}
 
     .nav-items {
       display: flex;
@@ -446,6 +450,7 @@
         font-size: 14px;
       }
     }
+    
   </style>
 </head>
 <body>
@@ -601,6 +606,28 @@
 
       lastScrollY = scrollY;
     });
+    // When top navbar hides, stick main-nav to very top
+const mainNav = document.querySelector('.main-nav');
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const section3Top = section3.offsetTop;
+
+  // hide top nav
+  if (scrollY >= section3Top - 100) {
+    topNavbar.classList.add('hidden');
+  } else {
+    topNavbar.classList.remove('hidden');
+  }
+
+  // make nav replace top menu when top menu hides
+  if (topNavbar.classList.contains('hidden')) {
+    mainNav.style.top = '0px';
+  } else {
+    mainNav.style.top = '80px';
+  }
+});
+
 
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
