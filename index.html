@@ -321,18 +321,24 @@
   /* ==============================================
   ===== CONTENT AND SPACER FIXES =====
   ============================================== */
-  .hero-spacer {
-    /* This creates the 100vh gap in the document flow */
-    height: 100vh;
-  }
+
   
-  .content-section {
-    /* This makes the content scroll "under" the spacer and stop below the fixed header */
-    margin-top: -100vh;
+ /* The Content Section FIX */
+.content-section {
     position: relative;
     z-index: 50;
     background: white;
-  }
+    /* This padding creates the initial gap */
+    padding-top: 100vh; 
+    /* Add a transition to the padding-top for a smoother scroll effect on content */
+    transition: padding-top 0.4s cubic-bezier(.2,.8,.2,1); 
+}
+  /* When the header is shrunk, reduce the content padding */
+.header-container.shrunk + .hero-spacer + .content-section {
+    padding-top: 132px; /* Matches the shrunk header height */
+}
+
+
 
   .content-wrapper {
     max-width: 1200px;
@@ -534,8 +540,6 @@
     </div>
   </header>
 
-  <div class="hero-spacer"></div>
-
 
   <section class="content-section" id="content">
     
@@ -551,7 +555,6 @@
 
   
   <script>
-// Assumes refreshNavHeight(), insertNavPlaceholder(), removeNavPlaceholder() exist above.
   const headerContainer = document.getElementById('headerContainer');
   const contentSection = document.getElementById('content');
   
@@ -562,16 +565,24 @@
     const scrollY = window.scrollY;
 
     if (scrollY > shrinkThreshold) {
+      // Add the shrunk class to both the header and the content
       headerContainer.classList.add('shrunk');
+      contentSection.classList.add('shrunk-content'); 
     } else {
+      // Remove the shrunk class from both the header and the content
       headerContainer.classList.remove('shrunk');
+      contentSection.classList.remove('shrunk-content');
     }
   });
 
   // Scroll indicator click
   function scrollToContent() {
     // Scrolls to the top of the content section
-    contentSection.scrollIntoView({ behavior: 'smooth' });
+    // By using window.scrollTo, we can offset for the sticky header
+    window.scrollTo({
+      top: contentSection.offsetTop - 132, // Offset by the final shrunk header height
+      behavior: 'smooth'
+    });
   }
 
   // Nav item active state
