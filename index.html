@@ -133,21 +133,11 @@
   overflow: hidden;
   z-index: 10;
 }
-    .hero-container.stopped {
-  position: relative;        /* no longer sticky */
-  top: auto;
-  height: 300px;             /* adjust to the compact height you want */
-  overflow: hidden;
-}
+
 
     .hero-container.shrunk {
       height: 300px;
     }
-
-    .hero-container.fixed-height {
-      height: 300px;
-    }
-
 
     .hero-image-wrapper {
       position: relative;
@@ -259,8 +249,8 @@
       min-height: 100vh;
       background: white;
       position: relative;
-      z-index: 2;
-      margin-top: -1px;
+      z-index: 11;
+      margin-top: calc(100vh - 80px);
     }
 
     /* Main Navigation */
@@ -521,9 +511,6 @@
     </div>
   </div>
 
-  <!-- SECTION 1: HERO SPACER -->
-  <section class="hero-section" id="heroSection"></section>
-
   <!-- SECTION 2: MAIN CONTENT -->
   <section class="content-section" id="content">
     <!-- Main Navigation -->
@@ -601,110 +588,102 @@
   <script>
 // Assumes refreshNavHeight(), insertNavPlaceholder(), removeNavPlaceholder() exist above.
 
-const heroContainer = document.getElementById('heroContainer');
-const heroSection = document.getElementById('heroSection');
-const topNavbar = document.getElementById('topNavbar');
-const section3 = document.getElementById('section3');
-const mainNav = document.querySelector('.main-nav');
-const contentSection = document.getElementById('content');
+<script>
+  // Get all the elements we need
+  const heroContainer = document.getElementById('heroContainer');
+  const topNavbar = document.getElementById('topNavbar');
+  const mainNav = document.querySelector('.main-nav');
+  const contentSection = document.getElementById('content');
+  const section3 = document.getElementById('section3'); // Keep for original logic if needed
 
-let lastScrollY = window.scrollY;
-let rafScheduled = false;
-const HYST = 18; // hysteresis buffer in px
+  let lastScrollY = window.scrollY;
+  let rafScheduled = false;
+  let navPlaceholder = null;
 
-function onScrollTick() {
-  rafScheduled = false;
-  const scrollY = window.scrollY;
-  const heroRect = heroContainer.getBoundingClientRect();
-  const mainRect = mainNav.getBoundingClientRect();
-  const topRect = topNavbar.getBoundingClientRect();
-  const section3Top = section3.getBoundingClientRect().top; // viewport-relative
+  // --- Main Navigation Placeholder Logic (This part was good) ---
+  
+  // helper to add/remove nav placeholder so layout doesn't jump
+  function insertNavPlaceholder() {
+    if (navPlaceholder) return;
+    navPlaceholder = document.createElement('div');
+    navPlaceholder.className = 'nav-placeholder';
+    navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
+    mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
+  }
+  function removeNavPlaceholder() {
+    if (!navPlaceholder) return;
+    navPlaceholder.parentNode.removeChild(navPlaceholder);
+    navPlaceholder = null;
+  }
+  
+  // --- NEW SCROLL LOGIC ---
 
-  // Calculate thresholds (viewport coordinates)
-  const mainTopViewport = mainRect.top;          // usually topNavbar height while sticky
-  const heroBottomViewport = heroRect.bottom;
+  function onScrollTick() {
+    rafScheduled = false;
+    const scrollY = window.scrollY;
 
-  // 1) Determine hero state:
-  // - "sticky-full" (no classes) while hero bottom is well below main nav
-  // - "shrunk" while hero bottom approaches main nav (close but not yet collided)
-  // - "stopped" when hero bottom has reached the main-nav top (becomes non-sticky)
-  //
-  // Use viewport coords so behaviour follows what user actually sees.
-  const SHRINK_START = mainTopViewport + 60;     // when hero bottom gets within ~60px of main nav top => start shrink
-  const STOP_AT = mainTopViewport + 2;           // when hero bottom <= main nav top => stop sticky
-
-  // scroll direction
-  const scrollingDown = scrollY > lastScrollY;
-
-  // apply hysteresis and direction-aware logic
-  if (scrollingDown) {
-    if (heroBottomViewport <= STOP_AT + HYST) {
-      // definitely past the main nav — stop sticky and enter normal flow
-      heroContainer.classList.add('stopped');
-      heroContainer.classList.remove('shrunk');
-    } else if (heroBottomViewport <= SHRINK_START) {
-      // close to main nav — shrink but still sticky
+    // --- 1. Hero Shrink Logic ---
+    // Shrinks the hero after scrolling 200px.
+    // This feels more intentional than 100px and isn't "way before".
+    const shrinkThreshold = 200; 
+    
+    if (scrollY > shrinkThreshold) {
       heroContainer.classList.add('shrunk');
-      heroContainer.classList.remove('stopped');
     } else {
-      // far from nav — full hero
-      heroContainer.classList.remove('shrunk', 'stopped');
-    }
-  } else { // scrolling up
-    if (heroBottomViewport >= SHRINK_START + HYST) {
-      // far above — restore full sticky hero
-      heroContainer.classList.remove('shrunk', 'stopped');
-    } else if (heroBottomViewport > STOP_AT + HYST) {
-      // in-between while scrolling up: prefer shrunk (so it doesn't pop abruptly)
-      heroContainer.classList.add('shrunk');
-      heroContainer.classList.remove('stopped');
-    } else {
-      // close to collision area while going up: keep stopped off (rare)
       heroContainer.classList.remove('shrunk');
-      heroContainer.classList.add('stopped');
     }
+
+    // --- 2. Top-Nav Hide & Main-Nav Takeover Logic ---
+    
+    // This is the key: We find the *exact* scroll position where
+    // the mainNav (inside contentSection) will hit the top navbar.
+    // (contentSection.offsetTop - topNavbar.offsetHeight)
+    const mainNavStickPoint = contentSection.offsetTop - 80;
+
+    // Check if we have scrolled to the point where mainNav should take over
+    if (scrollY >= mainNavStickPoint - 50) { // 50px buffer
+      topNavbar.classList.add('hidden');
+    } else {
+      topNavbar.classList.remove('hidden');
+    }
+
+    // This logic to make mainNav fixed was correct and keys off the 'hidden' class
+    if (topNavbar.classList.contains('hidden')) {
+      if (!mainNav.classList.contains('fixed')) {
+        insertNavPlaceholder(); // keeps space where nav was
+        mainNav.classList.add('fixed'); // make it fixed to top
+      }
+    } else {
+      if (mainNav.classList.contains('fixed')) {
+        mainNav.classList.remove('fixed');
+        // remove placeholder after a tiny timeout so CSS transitions can settle
+        setTimeout(removeNavPlaceholder, 40); 
+      }
+    }
+
+    lastScrollY = scrollY;
   }
 
-  // 2) Top-navbar hide / main-nav takeover:
-  // Only hide topNavbar and fix mainNav if user has actually passed SECTION 3
-  // AND the hero is already stopped (so nav won't become fixed while hero still covering it).
-  const topNavbarHeight = Math.round(topRect.height || 80);
-  const section3HitsTop = section3Top <= topNavbarHeight + 2; // section3 reached under topNavbar
-
-  if (section3HitsTop && heroContainer.classList.contains('stopped')) {
-    topNavbar.classList.add('hidden');
-    if (!mainNav.classList.contains('fixed')) {
-      insertNavPlaceholder();
-      mainNav.classList.add('fixed');
-      contentSection.classList.add('nav-fixed-padding');
+  window.addEventListener('scroll', () => {
+    if (!rafScheduled) {
+      rafScheduled = true;
+      requestAnimationFrame(onScrollTick);
     }
-  } else {
-    topNavbar.classList.remove('hidden');
-    if (mainNav.classList.contains('fixed')) {
-      mainNav.classList.remove('fixed');
-      contentSection.classList.remove('nav-fixed-padding');
-      // allow CSS transitions to finish before removing placeholder
-      setTimeout(removeNavPlaceholder, 40);
-    }
-  }
+  });
 
-  lastScrollY = scrollY;
-}
-
-window.addEventListener('scroll', () => {
-  if (!rafScheduled) {
-    rafScheduled = true;
-    requestAnimationFrame(onScrollTick);
-  }
-});
-
-    // Nav item active state
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
-      });
+  // Nav item active state (This part was good)
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
     });
-  </script>
+  });
+
+  // Scroll indicator click (This part was good)
+  function scrollToContent() {
+    // Scrolls to the top of the content section
+    contentSection.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
