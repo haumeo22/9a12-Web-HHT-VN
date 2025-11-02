@@ -125,15 +125,14 @@
     }
 
     /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
-    .hero-container {
+     .hero-container {
       position: sticky;
       top: 80px;
       height: calc(100vh - 80px);
-      transition: height 0.3s ease-out;
+      transition: height 0.3s ease-out, top 0.3s ease-out;
       overflow: hidden;
       z-index: 10;
     }
-
     .hero-container.shrunk {
       height: 300px;
     }
