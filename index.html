@@ -606,19 +606,19 @@ window.addEventListener('resize', refreshNavHeight);
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
 
-  // Get viewport height
+  // Calculate when to start and stop shrinking
   const viewportHeight = window.innerHeight;
-  const shrinkStart = viewportHeight * 0.3; // Start shrinking at 30% of viewport
-  const shrinkEnd = viewportHeight * 0.7;   // Fully shrunk at 70% of viewport
+  const shrinkStart = 100; // Start shrinking after scrolling 100px
+  const shrinkEnd = viewportHeight * 0.5; // Fully shrunk at 50% of viewport
 
   // 1) Shrink hero as user scrolls down
-  if (scrollY >= shrinkStart && scrollY < shrinkEnd) {
+  if (scrollY > shrinkStart && scrollY < shrinkEnd) {
     heroContainer.classList.add('shrunk');
     heroContainer.classList.remove('stopped');
   } else if (scrollY >= shrinkEnd) {
-    // Once fully scrolled past, stop it from being sticky
+    // Once fully scrolled, make it a normal page element
     heroContainer.classList.add('stopped');
-    heroContainer.classList.add('shrunk');
+    heroContainer.classList.remove('shrunk');
   } else {
     heroContainer.classList.remove('shrunk');
     heroContainer.classList.remove('stopped');
