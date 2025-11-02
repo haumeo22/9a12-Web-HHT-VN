@@ -4,686 +4,583 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>9A12 - Trang web lớp học</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ==============================================
+  ===== THE NEW HEADER CONTAINER (STICKY HERO) =====
+  ============================================== */
+  .header-container {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 100;
+    overflow: hidden;
+    /* This transition is for the height shrink */
+    transition: height 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  /* ----- The Background Image ----- */
+  .header-background {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.7);
+    z-index: 1;
+    /* This transition moves the bg image up slightly and blurs it */
+    transition: transform 0.4s ease-out, filter 0.4s ease-out;
+  }
+
+  /* ----- The Content Overlay ----- */
+  .header-content-overlay {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  /* ==============================================
+  ===== ROW 1: TOP ROW (Search, Login, etc.) =====
+  ============================================== */
+  .top-row {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease-out;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffd700;
+    font-size: 28px;
+    font-weight: bold;
+    transition: opacity 0.3s;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .search-bar {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 30px;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 14px;
+    background: #f5f5f5;
+    transition: all 0.3s;
+  }
+
+  .top-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .hotline-btn, .login-btn, .settings-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 2px solid;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    background: white;
+  }
+
+  .hotline-btn {
+    background: #ff6b6b;
+    color: white;
+    border-color: #ff6b6b;
+    line-height: 1.3;
+  }
+
+  .login-btn {
+    color: #ffd700;
+    border-color: #ffd700;
+  }
+
+  .settings-btn {
+    border-color: #ccc;
+    padding: 10px 15px;
+    font-size: 18px;
+  }
+
+
+  /* ==============================================
+  ===== THE MAIN HERO TITLE (9A12) =====
+  ============================================== */
+  .hero-title-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 9rem;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 
+                 0 0 60px rgba(255, 215, 0, 0.4);
+    letter-spacing: 30px;
+    animation: glow 2s ease-in-out infinite alternate;
+    transition: all 0.4s cubic-bezier(.2,.8,.2,1);
+    white-space: nowrap;
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
+    to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
+  }
+
+
+  /* ==============================================
+  ===== ROW 2: MAIN NAV (Trang Chủ, etc.) =====
+  ============================================== */
+  .main-nav-row {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid #f0f0f0;
+    /* Starts hidden/off-screen */
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.4s ease-out;
+  }
+
+  .nav-items {
+    display: flex;
+    list-style: none;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-item {
+    padding: 18px 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: #ffd700;
+    background: #fffbf0;
+    border-bottom-color: #ffd700;
+  }
+
+  
+  /* ==============================================
+  ===== DECORATIONS (Stars, Scroll Indicator) =====
+  ============================================== */
+  .star-decoration, .scroll-indicator {
+    position: absolute;
+    color: #ffd700;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 3;
+  }
+
+  .star-decoration {
+    font-size: 3rem;
+    animation: twinkle 2s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+
+  .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
+  .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
+  .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
+  .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .scroll-indicator {
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-indicator svg {
+    width: 30px;
+    height: 30px;
+    margin-top: 8px;
+    fill: white;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 10px); }
+  }
+
+
+  /* ==============================================
+  ===== THE SHRUNK STATE (IMAGE 2) =====
+  ============================================== */
+  .header-container.shrunk {
+    height: 132px; /* ~70px top-row + ~62px main-nav = 132px */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  
+  /* 1. The Background shrinks and blurs */
+  .header-container.shrunk .header-background {
+    transform: translateY(-200px);
+    filter: brightness(0.6) blur(5px);
+  }
+
+  /* 2. The Top Row moves to its final position */
+  .header-container.shrunk .top-row {
+    top: 0;
+    height: 70px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* 3. The original .logo (star) is hidden */
+  .header-container.shrunk .top-row .logo {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* 4. The Big Title transforms into the NEW logo */
+  .header-container.shrunk .hero-title-main {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: none;
+    animation: none;
+    top: 15px;
+    left: 30px;
+    transform: translate(0, 0);
+  }
+
+  /* 5. The Main Nav Row slides up and becomes visible */
+  .header-container.shrunk .main-nav-row {
+    opacity: 1;
+    transform: translateY(0);
+    position: absolute;
+    bottom: 0;
+    height: 62px;
+  }
+
+  /* 6. The Stars and Scroll Indicator disappear */
+  .header-container.shrunk .star-decoration,
+  .header-container.shrunk .scroll-indicator {
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
+  }
+
+  /* ==============================================
+  ===== CONTENT AND SPACER FIXES =====
+  ============================================== */
+  .hero-spacer {
+    /* This creates the 100vh gap in the document flow */
+    height: 100vh;
+  }
+  
+  .content-section {
+    /* This makes the content scroll "under" the spacer and stop below the fixed header */
+    margin-top: -100vh;
+    position: relative;
+    z-index: 50;
+    background: white;
+  }
+
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* ==============================================
+  ===== CONTENT STYLES (Your original code) =====
+  ============================================== */
+
+  /* HOT SECTION */
+  .hot-section {
+    margin-bottom: 40px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .hot-events-container {
+    flex: 1;
+  }
+
+  .hot-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    color: #ff6b6b;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .fire-icon {
+    font-size: 2.5rem;
+    animation: fire 1s infinite;
+  }
+
+  @keyframes fire {
+    0%, 100% { transform: scale(1) rotate(-5deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+  }
+
+  .events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .event-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 12px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .event-item:hover {
+    border-color: #ffd700;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+    transform: translateY(-3px);
+  }
+
+  .event-date {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 80px;
+    margin-right: 20px;
+    font-weight: bold;
+  }
+
+  .event-date .day {
+    font-size: 28px;
+    display: block;
+  }
+
+  .event-date .month {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .event-details {
+    flex: 1;
+  }
+
+  .event-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .event-desc {
+    color: #777;
+    font-size: 14px;
+  }
+
+  /* SIDE IMAGE */
+  .side-image-container {
+    width: 450px;
+    flex-shrink: 0;
+  }
+
+  .side-featured-image {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 3px solid #ffd700;
+  }
+
+  /* ===== SECTION 3: BLANK ===== */
+  .blank-section {
+    min-height: 100vh;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 2rem;
+  }
+
+  @media (max-width: 968px) {
+    .hero-title-main {
+      font-size: 5rem !important;
+      letter-spacing: 15px !important;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      overflow-x: hidden;
+    .header-container.shrunk .hero-title-main {
+      font-size: 28px !important; /* Keep small size when shrunk */
+      letter-spacing: 1px !important;
     }
-
-    /* ===== TOP NAVBAR (STICKY FOR SECTION 1 & 2) ===== */
-    .top-navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-      transition: opacity 0.3s;
-    }
-
-    .top-navbar.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ffd700;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #ffd700, #ffed4e);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .search-bar {
-      flex: 1;
-      max-width: 400px;
-      margin: 0 30px;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 12px 20px 12px 45px;
-      border: 2px solid #e0e0e0;
-      border-radius: 25px;
-      font-size: 14px;
-      background: #f5f5f5;
-      transition: all 0.3s;
-    }
-
-    .search-bar input:focus {
-      outline: none;
-      border-color: #ffd700;
-      background: white;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .hotline-btn, .login-btn, .settings-btn {
-      padding: 10px 20px;
-      border-radius: 25px;
-      border: 2px solid;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 14px;
-      background: white;
-    }
-
-    .hotline-btn {
-      background: #ff6b6b;
-      color: white;
-      border-color: #ff6b6b;
-      line-height: 1.3;
-    }
-
-    .hotline-btn:hover {
-      background: #ff5252;
-      transform: scale(1.05);
-    }
-
-    .login-btn {
-      color: #ffd700;
-      border-color: #ffd700;
-    }
-
-    .login-btn:hover {
-      background: #ffd700;
-      color: white;
-    }
-
-    .settings-btn {
-      border-color: #ccc;
-      padding: 10px 15px;
-      font-size: 18px;
-    }
-
-    /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
-.hero-container {
-  position: sticky;
-  top: 80px;                 /* same as top-navbar height */
-  height: calc(100vh - 80px);
-  transition: height 0.25s ease-out, top 0.25s ease-out;
-  overflow: hidden;
-  z-index: 10;
-}
-
-
-    .hero-container.shrunk {
-      height: 300px;
-    }
-
-    .hero-image-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .hero-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.7);
-    }
-
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
-      display: flex;
+    
+    .hot-section {
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
-
-    .hero-title {
-      font-size: 9rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 
-                   0 0 60px rgba(255, 215, 0, 0.4);
-      letter-spacing: 30px;
-      animation: glow 2s ease-in-out infinite alternate;
-      transition: font-size 0.3s ease-out, letter-spacing 0.3s ease-out;
-    }
-
-    .hero-container.shrunk .hero-title {
-      font-size: 5rem;
-      letter-spacing: 20px;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
-      to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
-    }
-
-    .star-decoration {
-      position: absolute;
-      color: #ffd700;
-      font-size: 3rem;
-      animation: twinkle 2s ease-in-out infinite;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-      transition: opacity 0.3s;
-    }
-
-    .hero-container.shrunk .star-decoration {
-      opacity: 0;
-    }
-
-    .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
-    .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
-    .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
-    .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 30px;
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      cursor: pointer;
-      animation: bounce 2s infinite;
-      transition: opacity 0.3s;
-    }
-
-    .hero-container.shrunk .scroll-indicator {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .scroll-indicator svg {
-      width: 30px;
-      height: 30px;
-      margin-top: 8px;
-      fill: white;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-
-    /* ===== SECTION 1: HERO SPACER ===== */
-    .hero-section {
-      height: calc(100vh - 80px);
-      position: relative;
-    }
-
-    /* ===== SECTION 2: MAIN CONTENT ===== */
-    .content-section {
-      min-height: 100vh;
-      background: white;
-      position: relative;
-      z-index: 11;
-      margin-top: calc(100vh - 80px);
-    }
-
-    /* Main Navigation */
-.main-nav {
-  background: white;
-  border-bottom: 2px solid #f0f0f0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  position: sticky;
-  top: 80px;                 /* starts below top-navbar */
-  z-index: 999;
-  transition: top 0.2s ease-out;
-}
-    .main-nav.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1001;             /* above the top-navbar */
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-}
-/* when hero shrinks, it stays where it is */
-.hero-container.shrunk ~ .content-section .main-nav {
-  top: 80px;
-}
-    /* placeholder used to preserve flow when nav becomes fixed */
-.nav-placeholder {
-  display: block;
-  width: 100%;
-  height: 0;
-}
-
-/* smooth height transition for hero to reduce jumpiness */
-.hero-container {
-  transition: height 0.28s cubic-bezier(.2,.8,.2,1), top 0.25s ease-out;
-}
-    /* when top navbar hidden = nav moves up */
-.top-navbar.hidden + .hero-container + .hero-section + .content-section .main-nav {
-  top: 0;
-}
-
-    .nav-items {
-      display: flex;
-      list-style: none;
-      gap: 5px;
-      margin: 0;
-      padding: 0;
+    
+    .side-image-container {
+      width: 100%;
     }
 
     .nav-item {
-      padding: 18px 35px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      color: #555;
-      transition: all 0.3s;
-      border-bottom: 3px solid transparent;
-      white-space: nowrap;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      color: #ffd700;
-      background: #fffbf0;
-      border-bottom-color: #ffd700;
-    }
-
-    .content-wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    /* HOT SECTION */
-    .hot-section {
-      margin-bottom: 40px;
-      display: flex;
-      gap: 30px;
-      align-items: flex-start;
-    }
-
-    .hot-events-container {
-      flex: 1;
-    }
-
-    .hot-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
-      color: #ff6b6b;
-      font-size: 2rem;
-      font-weight: bold;
-    }
-
-    .fire-icon {
-      font-size: 2.5rem;
-      animation: fire 1s infinite;
-    }
-
-    @keyframes fire {
-      0%, 100% { transform: scale(1) rotate(-5deg); }
-      50% { transform: scale(1.1) rotate(5deg); }
-    }
-
-    .events-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .event-item {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background: white;
-      border: 2px solid #f0f0f0;
-      border-radius: 12px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-
-    .event-item:hover {
-      border-color: #ffd700;
-      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
-      transform: translateY(-3px);
-    }
-
-    .event-date {
-      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-      color: white;
       padding: 15px 20px;
-      border-radius: 10px;
-      text-align: center;
-      min-width: 80px;
-      margin-right: 20px;
-      font-weight: bold;
-    }
-
-    .event-date .day {
-      font-size: 28px;
-      display: block;
-    }
-
-    .event-date .month {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .event-details {
-      flex: 1;
-    }
-
-    .event-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 5px;
-    }
-
-    .event-desc {
-      color: #777;
       font-size: 14px;
     }
-
-    /* SIDE IMAGE */
-    .side-image-container {
-      width: 450px;
-      flex-shrink: 0;
-    }
-
-    .side-featured-image {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border: 3px solid #ffd700;
-    }
-
-    /* ===== SECTION 3: BLANK ===== */
-    .blank-section {
-      min-height: 100vh;
-      background: #f8f9fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #999;
-      font-size: 2rem;
-    }
-
-    @media (max-width: 968px) {
-      .hero-title {
-        font-size: 5rem !important;
-        letter-spacing: 15px !important;
-      }
-
-      .hero-container.shrunk .hero-title {
-        font-size: 3rem !important;
-        letter-spacing: 10px !important;
-      }
-
-      .hot-section {
-        flex-direction: column;
-      }
-      
-      .side-image-container {
-        width: 100%;
-      }
-
-      .nav-item {
-        padding: 15px 20px;
-        font-size: 14px;
-      }
-    }
-    
-  </style>
+  }
+</style>
 </head>
 <body>
-  <!-- TOP NAVBAR (STICKY) -->
-  <nav class="top-navbar" id="topNavbar">
-    <div class="logo">
-      <div class="logo-icon">⭐</div>
-      <span>9A12</span>
-    </div>
+  <header class="header-container" id="headerContainer">
     
-    <div class="search-bar">
-      <input type="text" placeholder="what do you want to find">
-    </div>
-    
-    <div class="top-actions">
-      <button class="hotline-btn">☎ Hotline<br>0123456789</button>
-      <button class="login-btn">👤 Đăng nhập/ Đăng Ký</button>
-      <button class="settings-btn">⚙</button>
-    </div>
-  </nav>
+    <div class="header-background" style="background-image: url('assets/IMG_2873.JPG');"></div>
 
-  <!-- HERO CONTAINER (STICKY, SHRINKS ON SCROLL) -->
-  <div class="hero-container" id="heroContainer">
-    <div class="hero-image-wrapper">
-      <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-image">
-      <div class="hero-overlay">
-        <div class="star-decoration star-1">✦</div>
-        <div class="star-decoration star-2">✦</div>
-        <div class="star-decoration star-3">✦</div>
-        <div class="star-decoration star-4">✦</div>
-        
-        <h1 class="hero-title">9A12</h1>
-        
-        <div class="scroll-indicator" onclick="scrollToContent()">
-          <div>Cuộn xuống</div>
-          <svg viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5z"/>
-          </svg>
+    <div class="header-content-overlay">
+      
+      <div class="top-row" id="topRow">
+        <div class="logo">
+          <div class="logo-icon">⭐</div>
+          <span>9A12</span>
+        </div>
+        <div class="search-bar">
+          <input type="text" placeholder="what do you want to find">
+        </div>
+        <div class="top-actions">
+          <button class="hotline-btn">☎ Hotline<br>0123456789</button>
+          <button class="login-btn">👤 Đăng nhập/ Đăng Ký</button>
+          <button class="settings-btn">⚙</button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- SECTION 2: MAIN CONTENT -->
+      <h1 class="hero-title-main" id="heroTitle">9A12</h1>
+
+      <div class="star-decoration star-1">✦</div>
+      <div class="star-decoration star-2">✦</div>
+      <div class="star-decoration star-3">✦</div>
+      <div class="star-decoration star-4">✦</div>
+
+      <div class="scroll-indicator" onclick="scrollToContent()">
+        <div>Cuộn xuống</div>
+        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </div>
+
+      <nav class="main-nav-row" id="mainNavRow">
+        <ul class="nav-items">
+          <li class="nav-item active"><span>🏠</span> Trang Chủ</li>
+          <li class="nav-item"><span>⭐</span> Giới Thiệu</li>
+          <li class="nav-item"><span>🛒</span> Cửa Hàng</li>
+          <li class="nav-item"><span>📝</span> Hoạt Động</li>
+          <li class="nav-item"><span>📰</span> Tin Tức</li>
+          <li class="nav-item"><span>❤️</span> Đánh Giá</li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <div class="hero-spacer"></div>
+
+
   <section class="content-section" id="content">
-    <!-- Main Navigation -->
-    <nav class="main-nav">
-      <ul class="nav-items">
-        <li class="nav-item active">
-          <span>🏠</span> Trang Chủ
-        </li>
-        <li class="nav-item">
-          <span>⭐</span> Giới Thiệu
-        </li>
-        <li class="nav-item">
-          <span>🛒</span> Cửa Hàng
-        </li>
-        <li class="nav-item">
-          <span>📝</span> Hoạt Động
-        </li>
-        <li class="nav-item">
-          <span>📰</span> Tin Tức
-        </li>
-        <li class="nav-item">
-          <span>❤️</span> Đánh Giá
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Content Wrapper -->
+    
     <div class="content-wrapper">
-      <!-- Hot Section with Side Image -->
       <div class="hot-section">
-        <div class="hot-events-container">
-          <div class="hot-header">
-            <span class="fire-icon">🔥</span>
-            <span>HOT!!</span>
-          </div>
-          
-          <div class="events-list">
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">30</span>
-                <span class="month">/10</span>
-              </div>
-              <div class="event-details">
-                <div class="event-title">"Ái Mết trước" - Được giảm 9...</div>
-                <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
-              </div>
-            </div>
-            
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">28</span>
-                <span class="month">/10</span>
-              </div>
-              <div class="event-details">
-                <div class="event-title">"lật đổ HHT" - Giang Đặng trên...</div>
-                <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
-              </div>
-            </div>
-          </div>
         </div>
-
-        <!-- Side Featured Image -->
-        <div class="side-image-container">
-          <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image">
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- SECTION 3: BLANK -->
   <section class="blank-section" id="section3">
     <p>Section 3 - Coming Soon</p>
   </section>
 
+  
   <script>
 // Assumes refreshNavHeight(), insertNavPlaceholder(), removeNavPlaceholder() exist above.
-
-<script>
-  // Get all the elements we need
-  const heroContainer = document.getElementById('heroContainer');
-  const topNavbar = document.getElementById('topNavbar');
-  const mainNav = document.querySelector('.main-nav');
+  const headerContainer = document.getElementById('headerContainer');
   const contentSection = document.getElementById('content');
-  const section3 = document.getElementById('section3'); // Keep for original logic if needed
-
-  let lastScrollY = window.scrollY;
-  let rafScheduled = false;
-  let navPlaceholder = null;
-
-  // --- Main Navigation Placeholder Logic (This part was good) ---
   
-  // helper to add/remove nav placeholder so layout doesn't jump
-  function insertNavPlaceholder() {
-    if (navPlaceholder) return;
-    navPlaceholder = document.createElement('div');
-    navPlaceholder.className = 'nav-placeholder';
-    navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
-    mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
-  }
-  function removeNavPlaceholder() {
-    if (!navPlaceholder) return;
-    navPlaceholder.parentNode.removeChild(navPlaceholder);
-    navPlaceholder = null;
-  }
-  
-  // --- NEW SCROLL LOGIC ---
-
-  function onScrollTick() {
-    rafScheduled = false;
-    const scrollY = window.scrollY;
-
-    // --- 1. Hero Shrink Logic ---
-    // Shrinks the hero after scrolling 200px.
-    // This feels more intentional than 100px and isn't "way before".
-    const shrinkThreshold = 200; 
-    
-    if (scrollY > shrinkThreshold) {
-      heroContainer.classList.add('shrunk');
-    } else {
-      heroContainer.classList.remove('shrunk');
-    }
-
-    // --- 2. Top-Nav Hide & Main-Nav Takeover Logic ---
-    
-    // This is the key: We find the *exact* scroll position where
-    // the mainNav (inside contentSection) will hit the top navbar.
-    // (contentSection.offsetTop - topNavbar.offsetHeight)
-    const mainNavStickPoint = contentSection.offsetTop - 80;
-
-    // Check if we have scrolled to the point where mainNav should take over
-    if (scrollY >= mainNavStickPoint - 50) { // 50px buffer
-      topNavbar.classList.add('hidden');
-    } else {
-      topNavbar.classList.remove('hidden');
-    }
-
-    // This logic to make mainNav fixed was correct and keys off the 'hidden' class
-    if (topNavbar.classList.contains('hidden')) {
-      if (!mainNav.classList.contains('fixed')) {
-        insertNavPlaceholder(); // keeps space where nav was
-        mainNav.classList.add('fixed'); // make it fixed to top
-      }
-    } else {
-      if (mainNav.classList.contains('fixed')) {
-        mainNav.classList.remove('fixed');
-        // remove placeholder after a tiny timeout so CSS transitions can settle
-        setTimeout(removeNavPlaceholder, 40); 
-      }
-    }
-
-    lastScrollY = scrollY;
-  }
+  // This is the scroll distance that triggers the shrink
+  const shrinkThreshold = 100; // 100px from the top
 
   window.addEventListener('scroll', () => {
-    if (!rafScheduled) {
-      rafScheduled = true;
-      requestAnimationFrame(onScrollTick);
+    const scrollY = window.scrollY;
+
+    if (scrollY > shrinkThreshold) {
+      headerContainer.classList.add('shrunk');
+    } else {
+      headerContainer.classList.remove('shrunk');
     }
   });
 
-  // Nav item active state (This part was good)
+  // Scroll indicator click
+  function scrollToContent() {
+    // Scrolls to the top of the content section
+    contentSection.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Nav item active state
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', function() {
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
       this.classList.add('active');
     });
   });
-
-  // Scroll indicator click (This part was good)
-  function scrollToContent() {
-    // Scrolls to the top of the content section
-    contentSection.scrollIntoView({ behavior: 'smooth' });
-  }
 </script>
 </body>
 </html>
