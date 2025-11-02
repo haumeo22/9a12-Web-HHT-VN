@@ -125,14 +125,21 @@
     }
 
     /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
-     .hero-container {
-      position: sticky;
-      top: 80px;
-      height: calc(100vh - 80px);
-      transition: height 0.3s ease-out, top 0.3s ease-out;
-      overflow: hidden;
-      z-index: 10;
-    }
+.hero-container {
+  position: sticky;
+  top: 80px;                 /* same as top-navbar height */
+  height: calc(100vh - 80px);
+  transition: height 0.25s ease-out, top 0.25s ease-out;
+  overflow: hidden;
+  z-index: 10;
+}
+    .hero-container.stopped {
+  position: relative;        /* no longer sticky */
+  top: auto;
+  height: 300px;             /* adjust to the compact height you want */
+  overflow: hidden;
+}
+
     .hero-container.shrunk {
       height: 300px;
     }
@@ -264,9 +271,18 @@
   display: flex;
   justify-content: center;
   position: sticky;
-  top: 80px; /* start below top nav */
+  top: 80px;                 /* starts below top-navbar */
   z-index: 999;
-  transition: top 0.3s ease-out;
+  transition: top 0.2s ease-out;
+}
+    .main-nav.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1001;             /* above the top-navbar */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 /* when hero shrinks, it stays where it is */
 .hero-container.shrunk ~ .content-section .main-nav {
@@ -572,73 +588,56 @@
   </section>
 
   <script>
-    const heroContainer = document.getElementById('heroContainer');
-    const heroSection = document.getElementById('heroSection');
-    const topNavbar = document.getElementById('topNavbar');
-    const section3 = document.getElementById('section3');
-
-    function scrollToContent() {
-      document.getElementById('content').scrollIntoView({ 
-        behavior: 'smooth' 
-      });
-    }
-
-    // Shrink hero on scroll
-    let lastScrollY = 0;
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const heroSectionBottom = heroSection.offsetTop + heroSection.offsetHeight;
-      
-      // Shrink hero when scrolling past section 1
-      if (scrollY > heroSectionBottom - 100) {
-        heroContainer.classList.add('shrunk');
-      } else {
-        heroContainer.classList.remove('shrunk');
-      }
-
-      // Hide navbar when entering section 3
-      const section3Top = section3.offsetTop;
-      if (scrollY >= section3Top - 100) {
-        topNavbar.classList.add('hidden');
-      } else {
-        topNavbar.classList.remove('hidden');
-      }
-
-      lastScrollY = scrollY;
-    });
-    // When top navbar hides, stick main-nav to very top
+const heroContainer = document.getElementById('heroContainer');
+const heroSection = document.getElementById('heroSection');
+const topNavbar = document.getElementById('topNavbar');
+const section3 = document.getElementById('section3');
 const mainNav = document.querySelector('.main-nav');
+const contentSection = document.getElementById('content');
+
+// compute nav height and store as CSS variable for padding calculation
+function refreshNavHeight() {
+  const h = mainNav.getBoundingClientRect().height || 60;
+  document.documentElement.style.setProperty('--main-nav-height', h + 'px');
+}
+refreshNavHeight();
+window.addEventListener('resize', refreshNavHeight);
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
-  const section3Top = section3.offsetTop;
 
-  // hide top nav
+  // heroSection bottom position
+  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+
+  // 1) if we've scrolled *past* the hero section, stop the hero being sticky
+  //    (heroContainer will become relative and use compact height)
+  if (scrollY >= heroBottom - 80) {
+    heroContainer.classList.add('stopped');
+  } else {
+    heroContainer.classList.remove('stopped');
+  }
+
+  // 2) hide/show topNavbar as before (you used section3 threshold)
+  const section3Top = section3.offsetTop;
   if (scrollY >= section3Top - 100) {
     topNavbar.classList.add('hidden');
   } else {
     topNavbar.classList.remove('hidden');
   }
 
-  // make nav replace top menu when top menu hides
+  // 3) when topNavbar is hidden, make main-nav fixed to top so it "takes over"
   if (topNavbar.classList.contains('hidden')) {
-    mainNav.style.top = '0px';
+    if (!mainNav.classList.contains('fixed')) {
+      mainNav.classList.add('fixed');
+      // add content padding class to avoid content jump; you can remove if not needed
+      contentSection.classList.add('nav-fixed-padding');
+    }
   } else {
-    mainNav.style.top = '80px';
+    mainNav.classList.remove('fixed');
+    contentSection.classList.remove('nav-fixed-padding');
   }
 });
 
-
-    // Keyboard navigation
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        const heroSectionBottom = heroSection.offsetTop + heroSection.offsetHeight;
-        
-        if (window.scrollY < heroSectionBottom) {
-          scrollToContent();
-        }
-      }
-    });
 
     // Nav item active state
     document.querySelectorAll('.nav-item').forEach(item => {
