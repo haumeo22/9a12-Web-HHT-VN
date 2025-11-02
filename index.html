@@ -288,6 +288,17 @@
 .hero-container.shrunk ~ .content-section .main-nav {
   top: 80px;
 }
+    /* placeholder used to preserve flow when nav becomes fixed */
+.nav-placeholder {
+  display: block;
+  width: 100%;
+  height: 0;
+}
+
+/* smooth height transition for hero to reduce jumpiness */
+.hero-container {
+  transition: height 0.28s cubic-bezier(.2,.8,.2,1), top 0.25s ease-out;
+}
     /* when top navbar hidden = nav moves up */
 .top-navbar.hidden + .hero-container + .hero-section + .content-section .main-nav {
   top: 0;
@@ -595,7 +606,11 @@ const section3 = document.getElementById('section3');
 const mainNav = document.querySelector('.main-nav');
 const contentSection = document.getElementById('content');
 
-// compute nav height and store as CSS variable for padding calculation
+let lastScrollY = window.scrollY;
+let rafScheduled = false;
+let navPlaceholder = null;
+
+// compute nav height CSS var
 function refreshNavHeight() {
   const h = mainNav.getBoundingClientRect().height || 60;
   document.documentElement.style.setProperty('--main-nav-height', h + 'px');
@@ -603,28 +618,56 @@ function refreshNavHeight() {
 refreshNavHeight();
 window.addEventListener('resize', refreshNavHeight);
 
-window.addEventListener('scroll', () => {
+// helper to add/remove nav placeholder so layout doesn't jump
+function insertNavPlaceholder() {
+  if (navPlaceholder) return;
+  navPlaceholder = document.createElement('div');
+  navPlaceholder.className = 'nav-placeholder';
+  navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
+  mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
+}
+function removeNavPlaceholder() {
+  if (!navPlaceholder) return;
+  navPlaceholder.parentNode.removeChild(navPlaceholder);
+  navPlaceholder = null;
+}
+
+// smoother class toggles using requestAnimationFrame and hysteresis
+function onScrollTick() {
+  rafScheduled = false;
   const scrollY = window.scrollY;
+  const scrollDown = scrollY > lastScrollY;
+  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+  const stopThreshold = heroBottom - 80; // same place you used before
+  const HYST = 24; // buffer to avoid flip-flop
 
-  // Calculate when to start and stop shrinking
-  const viewportHeight = window.innerHeight;
-  const shrinkStart = 100; // Start shrinking after scrolling 100px
-  const shrinkEnd = viewportHeight * 0.5; // Fully shrunk at 50% of viewport
-
-  // 1) Shrink hero as user scrolls down
-  if (scrollY > shrinkStart && scrollY < shrinkEnd) {
-    heroContainer.classList.add('shrunk');
-    heroContainer.classList.remove('stopped');
-  } else if (scrollY >= shrinkEnd) {
-    // Once fully scrolled, make it a normal page element
-    heroContainer.classList.add('stopped');
-    heroContainer.classList.remove('shrunk');
-  } else {
-    heroContainer.classList.remove('shrunk');
-    heroContainer.classList.remove('stopped');
+  // SHRINK logic (shrunk vs stopped) with hysteresis and direction-awareness
+  if (scrollDown) {
+    if (scrollY >= stopThreshold + HYST) {
+      // definitely past hero: stop being sticky (become a normal element)
+      heroContainer.classList.add('stopped');
+      heroContainer.classList.remove('shrunk');
+    } else if (scrollY > 100) {
+      // in-between: shrink but still sticky
+      heroContainer.classList.add('shrunk');
+      heroContainer.classList.remove('stopped');
+    } else {
+      heroContainer.classList.remove('shrunk', 'stopped');
+    }
+  } else { // scrolling up
+    if (scrollY <= stopThreshold - HYST) {
+      // far above boundary: restore sticky behavior
+      heroContainer.classList.remove('stopped');
+      if (scrollY > 100) heroContainer.classList.add('shrunk');
+      else heroContainer.classList.remove('shrunk');
+    } else {
+      // when near the boundary while scrolling up, keep previous state but prefer shrunk
+      heroContainer.classList.remove('stopped');
+      if (scrollY > 100) heroContainer.classList.add('shrunk');
+    }
   }
 
-  // 2) hide/show topNavbar when reaching section 3
+  // TOP NAV hide/show (same threshold you used)
   const section3Top = section3.offsetTop;
   if (scrollY >= section3Top - 100) {
     topNavbar.classList.add('hidden');
@@ -632,17 +675,32 @@ window.addEventListener('scroll', () => {
     topNavbar.classList.remove('hidden');
   }
 
-  // 3) when topNavbar is hidden, make main-nav fixed to top
+  // MAIN NAV takeover with placeholder to prevent layout jump
   if (topNavbar.classList.contains('hidden')) {
     if (!mainNav.classList.contains('fixed')) {
-      mainNav.classList.add('fixed');
+      insertNavPlaceholder();             // keeps space where nav was
+      mainNav.classList.add('fixed');     // make it fixed to top
       contentSection.classList.add('nav-fixed-padding');
     }
   } else {
-    mainNav.classList.remove('fixed');
-    contentSection.classList.remove('nav-fixed-padding');
+    if (mainNav.classList.contains('fixed')) {
+      mainNav.classList.remove('fixed');
+      contentSection.classList.remove('nav-fixed-padding');
+      // remove placeholder after a tiny timeout so CSS transitions can settle
+      setTimeout(removeNavPlaceholder, 40);
+    }
+  }
+
+  lastScrollY = scrollY;
+}
+
+window.addEventListener('scroll', () => {
+  if (!rafScheduled) {
+    rafScheduled = true;
+    requestAnimationFrame(onScrollTick);
   }
 });
+
 
     // Nav item active state
     document.querySelectorAll('.nav-item').forEach(item => {
