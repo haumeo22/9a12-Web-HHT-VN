@@ -17,45 +17,49 @@
     }
 
     /* ===== TOP NAVBAR (STICKY FOR SECTION 1 & 2) ===== */
-    .top-navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-      transition: opacity 0.3s;
-    }
+:root { --topbar-h: 80px; } /* adjust if your top bar is taller/shorter */
 
-    .top-navbar.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
+/* top navbar (fixed) */
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);          /* explicit height used by JS/CSS */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;                  /* horizontal padding only; vertical space from height */
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  transition: opacity .25s ease, transform .25s ease;
+   width: 100%;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ffd700;
-      font-size: 28px;
-      font-weight: bold;
-    }
+/* hidden state used by JS */
+.top-navbar.hidden {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transform: translateY(-100%);
+}
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #ffd700, #ffed4e);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px; /* optional */
+}
 
     .search-bar {
       flex: 1;
@@ -126,11 +130,10 @@
 
     /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
 .hero-container {
-  position: sticky;
-  top: 80px;                 /* same as top-navbar height */
-  height: calc(100vh - 80px);
-  transition: height 0.25s ease-out, top 0.25s ease-out;
+  position: relative; /* not sticky */
+  height: calc(100vh - var(--topbar-h)); /* fills viewport under the top bar */
   overflow: hidden;
+  transition: none; /* JS will set height if needed; no CSS height transitions */
   z-index: 10;
 }
     .hero-container.stopped {
@@ -184,7 +187,7 @@
                    0 0 60px rgba(255, 215, 0, 0.4);
       letter-spacing: 30px;
       animation: glow 2s ease-in-out infinite alternate;
-      transition: font-size 0.3s ease-out, letter-spacing 0.3s ease-out;
+    transition: transform .22s ease, opacity .22s ease;
     }
 
     .hero-container.shrunk .hero-title {
@@ -249,10 +252,7 @@
     }
 
     /* ===== SECTION 1: HERO SPACER ===== */
-    .hero-section {
-      height: calc(100vh - 80px);
-      position: relative;
-    }
+.hero-section { height: calc(100vh - var(--topbar-h)); display: none; }
 
     /* ===== SECTION 2: MAIN CONTENT ===== */
     .content-section {
@@ -262,38 +262,91 @@
       z-index: 2;
       margin-top: -1px;
     }
+    #topbar-spacer {
+  height: var(--topbar-h, 80px);
+}
+    #nav-spacer {
+  height: 0;
+  transition: height .25s ease;
+}
+
 
     /* Main Navigation */
 .main-nav {
-  background: white;
-  border-bottom: 2px solid #f0f0f0;
-  padding: 0;
+  position: sticky; top: var(--topbar-h); z-index: 999; background: white;
+}
+.main-nav.fixed {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+}
+    .main-nav {
+  position: relative;
+}
+
+.nav-list {
   display: flex;
-  justify-content: center;
-  position: sticky;
-  top: 80px;                 /* starts below top-navbar */
-  z-index: 999;
-  transition: top 0.2s ease-out;
+  gap: 20px;
+  list-style: none;
 }
-    .main-nav.fixed {
-  position: fixed;
-  top: 0;
+
+.nav-item {
+  position: relative;
+}
+
+.nav-item > a {
+  padding: 10px 5px;
+  display: inline-block;
+}
+
+.drop-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 10px 2px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
   left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1001;             /* above the top-navbar */
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  background: white;
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,.15);
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  z-index: 1000;
 }
+
+.dropdown-menu li a {
+  padding: 8px 12px;
+  display: block;
+  white-space: nowrap;
+}
+
+.dropdown-menu li a:hover {
+  background: #f2f2f2;
+}
+
+/* show on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+/* coming soon style */
+.coming-soon {
+  opacity: .6;
+  pointer-events: none;
+}
+
 /* when hero shrinks, it stays where it is */
 .hero-container.shrunk ~ .content-section .main-nav {
   top: 80px;
 }
     /* placeholder used to preserve flow when nav becomes fixed */
-.nav-placeholder {
-  display: block;
-  width: 100%;
-  height: 0;
-}
+.nav-placeholder { display:block; width:100%; height:0; }
 
 /* smooth height transition for hero to reduce jumpiness */
 .hero-container {
@@ -336,6 +389,8 @@
       margin: 0 auto;
       padding: 40px 20px;
     }
+    
+    .content-section.nav-fixed-padding { padding-top: calc(var(--main-nav-height,60px) + 16px); }
 
     /* HOT SECTION */
     .hot-section {
@@ -477,14 +532,29 @@
         font-size: 14px;
       }
     }
-    
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(6px);
+  transition:
+    opacity .7s ease,
+    transform .7s ease,
+    filter .7s ease;
+}
+
+/* When visible */
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
   </style>
 </head>
 <body>
   <!-- TOP NAVBAR (STICKY) -->
   <nav class="top-navbar" id="topNavbar">
     <div class="logo">
-      <div class="logo-icon">⭐</div>
+      <img src="9A12-removebg.png" alt="9A12 logo" class="logo-img">
       <span>9A12</span>
     </div>
     
@@ -498,6 +568,8 @@
       <button class="settings-btn">⚙</button>
     </div>
   </nav>
+  <div id="topbar-spacer"></div>
+<div id="nav-spacer"></div>
 
   <!-- HERO CONTAINER (STICKY, SHRINKS ON SCROLL) -->
   <div class="hero-container" id="heroContainer">
@@ -528,40 +600,61 @@
   <section class="content-section" id="content">
     <!-- Main Navigation -->
     <nav class="main-nav">
-      <ul class="nav-items">
-        <li class="nav-item active">
-          <span>🏠</span> Trang Chủ
-        </li>
-        <li class="nav-item">
-          <span>⭐</span> Giới Thiệu
-        </li>
-        <li class="nav-item">
-          <span>🛒</span> Cửa Hàng
-        </li>
-        <li class="nav-item">
-          <span>📝</span> Hoạt Động
-        </li>
-        <li class="nav-item">
-          <span>📰</span> Tin Tức
-        </li>
-        <li class="nav-item">
-          <span>❤️</span> Đánh Giá
-        </li>
-      </ul>
-    </nav>
+<ul class="nav-list">
+
+  <li class="nav-item"><a href="#home">Trang Chủ</a></li>
+
+  <li class="nav-item dropdown">
+    <a class="main-link" href="#gioithieu-chung">Giới Thiệu</a>
+    <button class="drop-btn">▼</button>
+    <ul class="dropdown-menu">
+      <li><a href="#gioithieu-chung">Giới thiệu chung lớp</a></li>
+      <li><a href="#danh-sach-lop">Danh sách lớp</a></li>
+      <li><a href="#lien-he">Liên hệ & credit</a></li>
+    </ul>
+  </li>
+
+  <li class="nav-item dropdown">
+    <a class="main-link" href="#doanh-nhan-nhi">Cửa Hàng</a>
+    <button class="drop-btn">▼</button>
+    <ul class="dropdown-menu">
+      <li><a href="#doanh-nhan-nhi">Doanh nhân nhí</a></li>
+      <li><a class="coming-soon">Other (Coming Soon)</a></li>
+    </ul>
+  </li>
+
+  <li class="nav-item dropdown">
+    <a class="main-link" href="#hoat-dong">Tin Tức</a>
+    <button class="drop-btn">▼</button>
+    <ul class="dropdown-menu">
+      <li><a href="#hoat-dong">Hoạt động</a></li>
+      <li><a href="#thu-vien">Thư viện</a></li>
+      <li><a href="#bai-dang">Bài đăng</a></li>
+    </ul>
+  </li>
+
+  <li class="nav-item"><a href="#danh-gia">Đánh Giá</a></li>
+
+</ul>
+
+</nav>
 
     <!-- Content Wrapper -->
     <div class="content-wrapper">
+      <div class="page" id="page-home">
       <!-- Hot Section with Side Image -->
-      <div class="hot-section">
-        <div class="hot-events-container">
-          <div class="hot-header">
+      <div class="hot-section reveal">
+
+        <div class="hot-events-container reveal">
+
+          <div class="hot-header reveal">
+
             <span class="fire-icon">🔥</span>
             <span>HOT!!</span>
           </div>
           
           <div class="events-list">
-            <div class="event-item">
+            <div class="event-item reveal">
               <div class="event-date">
                 <span class="day">30</span>
                 <span class="month">/10</span>
@@ -584,9 +677,10 @@
             </div>
           </div>
         </div>
+      </div>
 
         <!-- Side Featured Image -->
-        <div class="side-image-container">
+        <div class="side-image-container reveal">
           <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image">
         </div>
       </div>
@@ -598,117 +692,186 @@
     <p>Section 3 - Coming Soon</p>
   </section>
 
+  <div class="page" id="page-gioithieu" style="display:none;">
+  <h2>Giới Thiệu Chung Lớp</h2>
+  <div id="gioithieu-chung"></div>
+
+  <h2>Danh Sách Lớp</h2>
+  <div id="danh-sach-lop"></div>
+
+  <h2>Liên Hệ & Credit</h2>
+  <div id="lien-he"></div>
+</div>
+
+
+<div class="page" id="page-cuahang" style="display:none;">
+  <h2>Doanh nhân nhí</h2>
+  <div id="doanh-nhan-nhi"></div>
+
+  <h2>Other</h2>
+  <p>Coming soon...</p>
+</div>
+
+
+<div class="page" id="page-tintuc" style="display:none;">
+  <h2>Hoạt động</h2>
+  <div id="hoat-dong"></div>
+
+  <h2>Thư viện</h2>
+  <div id="thu-vien"></div>
+
+  <h2>Bài đăng</h2>
+  <div id="bai-dang"></div>
+</div>
+
+
+<div class="page" id="page-danhgia" style="display:none;">
+  <h2>Đánh giá</h2>
+  <div id="danh-gia"></div>
+</div>
+
   <script>
-const heroContainer = document.getElementById('heroContainer');
-const heroSection = document.getElementById('heroSection');
-const topNavbar = document.getElementById('topNavbar');
-const section3 = document.getElementById('section3');
-const mainNav = document.querySelector('.main-nav');
-const contentSection = document.getElementById('content');
+// ===== HERO HEIGHT SYNC =====
+(function(){
+  const topBar = document.querySelector('.top-navbar') || document.getElementById('topNavbar');
+  const hero = document.getElementById('heroContainer') || document.querySelector('.hero-container');
 
-let lastScrollY = window.scrollY;
-let rafScheduled = false;
-let navPlaceholder = null;
+  if (!hero) return;
 
-// compute nav height CSS var
-function refreshNavHeight() {
-  const h = mainNav.getBoundingClientRect().height || 60;
-  document.documentElement.style.setProperty('--main-nav-height', h + 'px');
-}
-refreshNavHeight();
-window.addEventListener('resize', refreshNavHeight);
+  function syncHeroHeight(){
+    const topH = topBar ? Math.round(topBar.getBoundingClientRect().height) : 80;
+    document.documentElement.style.setProperty('--topbar-h', topH + 'px');
+    hero.style.height = `calc(100vh - ${topH}px)`;
+  }
 
-// helper to add/remove nav placeholder so layout doesn't jump
-function insertNavPlaceholder() {
-  if (navPlaceholder) return;
-  navPlaceholder = document.createElement('div');
-  navPlaceholder.className = 'nav-placeholder';
-  navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
-  mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
-}
-function removeNavPlaceholder() {
-  if (!navPlaceholder) return;
-  navPlaceholder.parentNode.removeChild(navPlaceholder);
-  navPlaceholder = null;
-}
+  syncHeroHeight();
+  window.addEventListener('resize', syncHeroHeight);
+})();
+</script>
 
-// smoother class toggles using requestAnimationFrame and hysteresis
-function onScrollTick() {
-  rafScheduled = false;
-  const scrollY = window.scrollY;
-  const scrollDown = scrollY > lastScrollY;
-  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-  const stopThreshold = heroBottom - 80; // same place you used before
-  const HYST = 24; // buffer to avoid flip-flop
+<script>
+// ===== TOP BAR HIDE + NAV TAKEOVER =====
+(function(){
+  const topNavbar = document.getElementById('topNavbar') || document.querySelector('.top-navbar');
+  const section3 = document.getElementById('section3') || document.querySelector('.blank-section');
+  const mainNav = document.querySelector('.main-nav');
+  const contentSection = document.getElementById('content') || document.querySelector('.content-section');
 
-  // SHRINK logic (shrunk vs stopped) with hysteresis and direction-awareness
-  if (scrollDown) {
-    if (scrollY >= stopThreshold + HYST) {
-      // definitely past hero: stop being sticky (become a normal element)
-      heroContainer.classList.add('stopped');
-      heroContainer.classList.remove('shrunk');
-    } else if (scrollY > 100) {
-      // in-between: shrink but still sticky
-      heroContainer.classList.add('shrunk');
-      heroContainer.classList.remove('stopped');
+  if (!mainNav || !section3) return;
+
+  let navPlaceholder = null;
+
+  function insertPlaceholder() {
+    if (navPlaceholder) return;
+    navPlaceholder = document.createElement('div');
+    navPlaceholder.className = 'nav-placeholder';
+    navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
+    mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
+  }
+  function removePlaceholder() {
+    if (!navPlaceholder) return;
+    navPlaceholder.remove();
+    navPlaceholder = null;
+  }
+
+  function handleScroll() {
+    const scrollY = window.scrollY;
+    const topbarH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 80;
+    const section3Top = section3.offsetTop - topbarH;
+
+    if (scrollY >= section3Top) {
+      topNavbar && topNavbar.classList.add('hidden');
+      if (!mainNav.classList.contains('fixed')) {
+        insertPlaceholder();
+        mainNav.classList.add('fixed');
+        contentSection && contentSection.classList.add('nav-fixed-padding');
+      }
     } else {
-      heroContainer.classList.remove('shrunk', 'stopped');
-    }
-  } else { // scrolling up
-    if (scrollY <= stopThreshold - HYST) {
-      // far above boundary: restore sticky behavior
-      heroContainer.classList.remove('stopped');
-      if (scrollY > 100) heroContainer.classList.add('shrunk');
-      else heroContainer.classList.remove('shrunk');
-    } else {
-      // when near the boundary while scrolling up, keep previous state but prefer shrunk
-      heroContainer.classList.remove('stopped');
-      if (scrollY > 100) heroContainer.classList.add('shrunk');
+      topNavbar && topNavbar.classList.remove('hidden');
+      if (mainNav.classList.contains('fixed')) {
+        mainNav.classList.remove('fixed');
+        contentSection && contentSection.classList.remove('nav-fixed-padding');
+        setTimeout(removePlaceholder, 40);
+      }
     }
   }
 
-  // TOP NAV hide/show (same threshold you used)
-  const section3Top = section3.offsetTop;
-  if (scrollY >= section3Top - 100) {
-    topNavbar.classList.add('hidden');
-  } else {
-    topNavbar.classList.remove('hidden');
-  }
+  window.addEventListener('scroll', handleScroll);
+})();
+</script>
 
-  // MAIN NAV takeover with placeholder to prevent layout jump
-  if (topNavbar.classList.contains('hidden')) {
-    if (!mainNav.classList.contains('fixed')) {
-      insertNavPlaceholder();             // keeps space where nav was
-      mainNav.classList.add('fixed');     // make it fixed to top
-      contentSection.classList.add('nav-fixed-padding');
-    }
-  } else {
-    if (mainNav.classList.contains('fixed')) {
-      mainNav.classList.remove('fixed');
-      contentSection.classList.remove('nav-fixed-padding');
-      // remove placeholder after a tiny timeout so CSS transitions can settle
-      setTimeout(removeNavPlaceholder, 40);
-    }
-  }
-
-  lastScrollY = scrollY;
-}
-
-window.addEventListener('scroll', () => {
-  if (!rafScheduled) {
-    rafScheduled = true;
-    requestAnimationFrame(onScrollTick);
+<!-- ✅ Add this block right here -->
+<script>
+// Show top bar when mouse touches top of screen
+document.addEventListener("mousemove", (e) => {
+  const threshold = 10; // px from top
+  const topNavbar = document.getElementById('topNavbar') || document.querySelector('.top-navbar');
+  if (e.clientY <= threshold) {
+    topNavbar && topNavbar.classList.remove("hidden");
   }
 });
+</script>
 
+<script>
+// ===== REVEAL FADE ANIMATION =====
+document.addEventListener("DOMContentLoaded", () => {
+  const elements = document.querySelectorAll(".reveal");
 
-    // Nav item active state
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
-      });
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        observer.unobserve(entry.target);
+      }
     });
-  </script>
+  }, { threshold: 0.15 });
+
+  elements.forEach(el => observer.observe(el));
+});
+</script>
+  <script>
+let hideTimer;
+const topNavbar = document.getElementById('topNavbar');
+const mainNav = document.querySelector('.main-nav');
+const navSpacer = document.getElementById('nav-spacer');
+
+function showTopBar(){
+  clearTimeout(hideTimer);
+  topNavbar.classList.remove("hidden");
+  
+  // Push nav down when bar is visible
+  navSpacer.style.height = mainNav.offsetHeight + "px";
+}
+
+function hideTopBar(){
+  hideTimer = setTimeout(()=>{
+    topNavbar.classList.add("hidden");
+    
+    // Remove space after fade
+    navSpacer.style.height = "0px";
+  }, 500);
+}
+
+// show when mouse hits very top
+document.addEventListener("mousemove", e=>{
+  if(e.clientY <= 10) showTopBar();
+});
+
+// hide when mouse leaves navbar OR after scrolling past hero
+topNavbar.addEventListener("mouseleave", hideTopBar);
+</script>
+  <script>
+// Clicking the main nav item = first submenu link
+document.querySelectorAll('.nav-item.dropdown > a').forEach(mainLink => {
+  mainLink.addEventListener('click', function(e){
+    const firstSub = this.parentElement.querySelector('.dropdown-menu a:not(.coming-soon)');
+    if(firstSub){
+      e.preventDefault();
+      firstSub.click();
+    }
+  });
+});
+</script>
+
 </body>
 </html>
