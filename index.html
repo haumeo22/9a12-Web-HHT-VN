@@ -1,877 +1,190 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>9A12 - Trang web lớp học</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* ===== TOP NAVBAR (STICKY FOR SECTION 1 & 2) ===== */
-:root { --topbar-h: 80px; } /* adjust if your top bar is taller/shorter */
-
-/* top navbar (fixed) */
-.top-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--topbar-h);          /* explicit height used by JS/CSS */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;                  /* horizontal padding only; vertical space from height */
-  background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  z-index: 1000;
-  transition: opacity .25s ease, transform .25s ease;
-   width: 100%;
-}
-
-/* hidden state used by JS */
-.top-navbar.hidden {
-  opacity: 0;
-  transform: translateY(-6px);
-  pointer-events: none;
-  transform: translateY(-100%);
-}
-
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.logo-img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  border-radius: 6px; /* optional */
-}
-
-    .search-bar {
-      flex: 1;
-      max-width: 400px;
-      margin: 0 30px;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 12px 20px 12px 45px;
-      border: 2px solid #e0e0e0;
-      border-radius: 25px;
-      font-size: 14px;
-      background: #f5f5f5;
-      transition: all 0.3s;
-    }
-
-    .search-bar input:focus {
-      outline: none;
-      border-color: #ffd700;
-      background: white;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .hotline-btn, .login-btn, .settings-btn {
-      padding: 10px 20px;
-      border-radius: 25px;
-      border: 2px solid;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 14px;
-      background: white;
-    }
-
-    .hotline-btn {
-      background: #ff6b6b;
-      color: white;
-      border-color: #ff6b6b;
-      line-height: 1.3;
-    }
-
-    .hotline-btn:hover {
-      background: #ff5252;
-      transform: scale(1.05);
-    }
-
-    .login-btn {
-      color: #ffd700;
-      border-color: #ffd700;
-    }
-
-    .login-btn:hover {
-      background: #ffd700;
-      color: white;
-    }
-
-    .settings-btn {
-      border-color: #ccc;
-      padding: 10px 15px;
-      font-size: 18px;
-    }
-
-    /* ===== HERO CONTAINER (SHRINKS ON SCROLL) ===== */
-.hero-container {
-  position: relative; /* not sticky */
-  height: calc(100vh - var(--topbar-h)); /* fills viewport under the top bar */
-  overflow: hidden;
-  transition: none; /* JS will set height if needed; no CSS height transitions */
-  z-index: 10;
-}
-    .hero-container.stopped {
-  position: relative;        /* no longer sticky */
-  top: auto;
-  height: 300px;             /* adjust to the compact height you want */
-  overflow: hidden;
-}
-
-    .hero-container.shrunk {
-      height: 300px;
-    }
-
-    .hero-container.fixed-height {
-      height: 300px;
-    }
-
-
-    .hero-image-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .hero-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.7);
-    }
-
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hero-title {
-      font-size: 9rem;
-      font-weight: 900;
-      color: #ffd700;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 
-                   0 0 60px rgba(255, 215, 0, 0.4);
-      letter-spacing: 30px;
-      animation: glow 2s ease-in-out infinite alternate;
-    transition: transform .22s ease, opacity .22s ease;
-    }
-
-    .hero-container.shrunk .hero-title {
-      font-size: 5rem;
-      letter-spacing: 20px;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
-      to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6); }
-    }
-
-    .star-decoration {
-      position: absolute;
-      color: #ffd700;
-      font-size: 3rem;
-      animation: twinkle 2s ease-in-out infinite;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-      transition: opacity 0.3s;
-    }
-
-    .hero-container.shrunk .star-decoration {
-      opacity: 0;
-    }
-
-    .star-1 { top: 15%; left: 15%; animation-delay: 0s; }
-    .star-2 { top: 20%; right: 15%; animation-delay: 0.5s; }
-    .star-3 { bottom: 20%; left: 20%; animation-delay: 1s; }
-    .star-4 { bottom: 25%; right: 20%; animation-delay: 1.5s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 30px;
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      cursor: pointer;
-      animation: bounce 2s infinite;
-      transition: opacity 0.3s;
-    }
-
-    .hero-container.shrunk .scroll-indicator {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .scroll-indicator svg {
-      width: 30px;
-      height: 30px;
-      margin-top: 8px;
-      fill: white;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-
-    /* ===== SECTION 1: HERO SPACER ===== */
-.hero-section { height: calc(100vh - var(--topbar-h)); display: none; }
-
-    /* ===== SECTION 2: MAIN CONTENT ===== */
-    .content-section {
-      min-height: 100vh;
-      background: white;
-      position: relative;
-      z-index: 2;
-      margin-top: -1px;
-    }
-    #topbar-spacer {
-  height: var(--topbar-h, 80px);
-}
-    #nav-spacer {
-  height: 0;
-  transition: height .25s ease;
-}
-
-
-    /* Main Navigation */
-.main-nav {
-  position: sticky; top: var(--topbar-h); z-index: 999; background: white;
-}
-.main-nav.fixed {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
-}
-    .main-nav {
-  position: relative;
-}
-
-.nav-list {
-  display: flex;
-  gap: 20px;
-  list-style: none;
-}
-
-.nav-item {
-  position: relative;
-}
-
-.nav-item > a {
-  padding: 10px 5px;
-  display: inline-block;
-}
-
-.drop-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 10px 2px;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border-radius: 8px;
-  padding: 8px 0;
-  box-shadow: 0 3px 10px rgba(0,0,0,.15);
-  display: none;
-  flex-direction: column;
-  min-width: 200px;
-  z-index: 1000;
-}
-
-.dropdown-menu li a {
-  padding: 8px 12px;
-  display: block;
-  white-space: nowrap;
-}
-
-.dropdown-menu li a:hover {
-  background: #f2f2f2;
-}
-
-/* show on hover */
-.nav-item.dropdown:hover .dropdown-menu {
-  display: flex;
-}
-
-/* coming soon style */
-.coming-soon {
-  opacity: .6;
-  pointer-events: none;
-}
-
-/* when hero shrinks, it stays where it is */
-.hero-container.shrunk ~ .content-section .main-nav {
-  top: 80px;
-}
-    /* placeholder used to preserve flow when nav becomes fixed */
-.nav-placeholder { display:block; width:100%; height:0; }
-
-/* smooth height transition for hero to reduce jumpiness */
-.hero-container {
-  transition: height 0.28s cubic-bezier(.2,.8,.2,1), top 0.25s ease-out;
-}
-    /* when top navbar hidden = nav moves up */
-.top-navbar.hidden + .hero-container + .hero-section + .content-section .main-nav {
-  top: 0;
-}
-
-    .nav-items {
-      display: flex;
-      list-style: none;
-      gap: 5px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .nav-item {
-      padding: 18px 35px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      color: #555;
-      transition: all 0.3s;
-      border-bottom: 3px solid transparent;
-      white-space: nowrap;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      color: #ffd700;
-      background: #fffbf0;
-      border-bottom-color: #ffd700;
-    }
-
-    .content-wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-    
-    .content-section.nav-fixed-padding { padding-top: calc(var(--main-nav-height,60px) + 16px); }
-
-    /* HOT SECTION */
-    .hot-section {
-      margin-bottom: 40px;
-      display: flex;
-      gap: 30px;
-      align-items: flex-start;
-    }
-
-    .hot-events-container {
-      flex: 1;
-    }
-
-    .hot-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
-      color: #ff6b6b;
-      font-size: 2rem;
-      font-weight: bold;
-    }
-
-    .fire-icon {
-      font-size: 2.5rem;
-      animation: fire 1s infinite;
-    }
-
-    @keyframes fire {
-      0%, 100% { transform: scale(1) rotate(-5deg); }
-      50% { transform: scale(1.1) rotate(5deg); }
-    }
-
-    .events-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .event-item {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background: white;
-      border: 2px solid #f0f0f0;
-      border-radius: 12px;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-
-    .event-item:hover {
-      border-color: #ffd700;
-      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
-      transform: translateY(-3px);
-    }
-
-    .event-date {
-      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      text-align: center;
-      min-width: 80px;
-      margin-right: 20px;
-      font-weight: bold;
-    }
-
-    .event-date .day {
-      font-size: 28px;
-      display: block;
-    }
-
-    .event-date .month {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .event-details {
-      flex: 1;
-    }
-
-    .event-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 5px;
-    }
-
-    .event-desc {
-      color: #777;
-      font-size: 14px;
-    }
-
-    /* SIDE IMAGE */
-    .side-image-container {
-      width: 450px;
-      flex-shrink: 0;
-    }
-
-    .side-featured-image {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border: 3px solid #ffd700;
-    }
-
-    /* ===== SECTION 3: BLANK ===== */
-    .blank-section {
-      min-height: 100vh;
-      background: #f8f9fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #999;
-      font-size: 2rem;
-    }
-
-    @media (max-width: 968px) {
-      .hero-title {
-        font-size: 5rem !important;
-        letter-spacing: 15px !important;
-      }
-
-      .hero-container.shrunk .hero-title {
-        font-size: 3rem !important;
-        letter-spacing: 10px !important;
-      }
-
-      .hot-section {
-        flex-direction: column;
-      }
-      
-      .side-image-container {
-        width: 100%;
-      }
-
-      .nav-item {
-        padding: 15px 20px;
-        font-size: 14px;
-      }
-    }
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  filter: blur(6px);
-  transition:
-    opacity .7s ease,
-    transform .7s ease,
-    filter .7s ease;
-}
-
-/* When visible */
-.reveal.show {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>9A12</title>
+
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- TOP NAVBAR (STICKY) -->
+
+  <!-- TOP BAR -->
   <nav class="top-navbar" id="topNavbar">
-    <div class="logo">
-      <img src="9A12-removebg.png" alt="9A12 logo" class="logo-img">
-      <span>9A12</span>
-    </div>
-    
-    <div class="search-bar">
-      <input type="text" placeholder="what do you want to find">
-    </div>
-    
-    <div class="top-actions">
-      <button class="hotline-btn">☎ Hotline<br>0123456789</button>
-      <button class="login-btn">👤 Đăng nhập/ Đăng Ký</button>
-      <button class="settings-btn">⚙</button>
+    <div class="top-inner">
+      <div class="logo">
+        <!-- Replace with your 1000x1000 image in assets/logo.png -->
+        <img src="assets/logo.png" alt="9A12" class="logo-img" />
+        <span class="logo-text">9A12</span>
+      </div>
+
+      <div class="search">
+        <input type="search" placeholder="what do you want to find" />
+      </div>
+
+      <div class="top-actions">
+        <button class="hotline">Hotline 0123456789</button>
+        <button class="auth">Đăng nhập / Đăng ký</button>
+      </div>
     </div>
   </nav>
-  <div id="topbar-spacer"></div>
-<div id="nav-spacer"></div>
 
-  <!-- HERO CONTAINER (STICKY, SHRINKS ON SCROLL) -->
+  <!-- optional spacer for topbar (keeps flow consistent) -->
+  <div id="topbar-spacer" aria-hidden="true"></div>
+  <!-- spacer that will be toggled to push nav when it becomes fixed -->
+  <div id="nav-spacer" aria-hidden="true"></div>
+
+  <!-- HERO -->
   <div class="hero-container" id="heroContainer">
-    <div class="hero-image-wrapper">
-      <img src="assets/IMG_2873.JPG" alt="Class 9A12" class="hero-image">
-      <div class="hero-overlay">
-        <div class="star-decoration star-1">✦</div>
-        <div class="star-decoration star-2">✦</div>
-        <div class="star-decoration star-3">✦</div>
-        <div class="star-decoration star-4">✦</div>
-        
-        <h1 class="hero-title">9A12</h1>
-        
-        <div class="scroll-indicator" onclick="scrollToContent()">
-          <div>Cuộn xuống</div>
-          <svg viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5z"/>
-          </svg>
-        </div>
-      </div>
+    <div class="hero-image">
+      <!-- sample hero image (replace with your own) -->
+      <img src="assets/hero.jpg" alt="Hero" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div class="hero-title reveal">
+      <h1>9 A 12</h1>
     </div>
   </div>
 
-  <!-- SECTION 1: HERO SPACER -->
-  <section class="hero-section" id="heroSection"></section>
+  <!-- spacer representing the hero zone so nav starts lower -->
+  <section class="hero-section" id="heroSection" aria-hidden="true"></section>
 
-  <!-- SECTION 2: MAIN CONTENT -->
+  <!-- CONTENT WRAPPER -->
   <section class="content-section" id="content">
-    <!-- Main Navigation -->
+
+    <!-- MAIN NAV (replace list items if you want) -->
     <nav class="main-nav">
-<ul class="nav-list">
+      <ul class="nav-list">
 
-  <li class="nav-item"><a href="#home">Trang Chủ</a></li>
+        <li class="nav-item">
+          <a class="main-link" href="#home">Trang Chủ</a>
+        </li>
 
-  <li class="nav-item dropdown">
-    <a class="main-link" href="#gioithieu-chung">Giới Thiệu</a>
-    <button class="drop-btn">▼</button>
-    <ul class="dropdown-menu">
-      <li><a href="#gioithieu-chung">Giới thiệu chung lớp</a></li>
-      <li><a href="#danh-sach-lop">Danh sách lớp</a></li>
-      <li><a href="#lien-he">Liên hệ & credit</a></li>
-    </ul>
-  </li>
+        <li class="nav-item dropdown">
+          <a class="main-link" href="#gioithieu">Giới Thiệu</a>
+          <button class="drop-btn" aria-expanded="false">▾</button>
+          <ul class="dropdown-menu">
+            <li><a href="#gioithieu-chung">Giới thiệu chung lớp</a></li>
+            <li><a href="#danh-sach-lop">Danh sách lớp</a></li>
+            <li><a href="#lien-he">Liên hệ & Credit</a></li>
+          </ul>
+        </li>
 
-  <li class="nav-item dropdown">
-    <a class="main-link" href="#doanh-nhan-nhi">Cửa Hàng</a>
-    <button class="drop-btn">▼</button>
-    <ul class="dropdown-menu">
-      <li><a href="#doanh-nhan-nhi">Doanh nhân nhí</a></li>
-      <li><a class="coming-soon">Other (Coming Soon)</a></li>
-    </ul>
-  </li>
+        <li class="nav-item dropdown">
+          <a class="main-link" href="#cuahang">Cửa Hàng</a>
+          <button class="drop-btn" aria-expanded="false">▾</button>
+          <ul class="dropdown-menu">
+            <li><a href="#doanh-nhan-nhi">Doanh nhân nhí</a></li>
+            <li><a class="coming-soon" href="#store-other">Other (Coming Soon)</a></li>
+          </ul>
+        </li>
 
-  <li class="nav-item dropdown">
-    <a class="main-link" href="#hoat-dong">Tin Tức</a>
-    <button class="drop-btn">▼</button>
-    <ul class="dropdown-menu">
-      <li><a href="#hoat-dong">Hoạt động</a></li>
-      <li><a href="#thu-vien">Thư viện</a></li>
-      <li><a href="#bai-dang">Bài đăng</a></li>
-    </ul>
-  </li>
+        <li class="nav-item dropdown">
+          <a class="main-link" href="#tintuc">Tin Tức</a>
+          <button class="drop-btn" aria-expanded="false">▾</button>
+          <ul class="dropdown-menu">
+            <li><a href="#hoat-dong">Hoạt động</a></li>
+            <li><a href="#thu-vien">Thư viện</a></li>
+            <li><a href="#bai-dang">Bài đăng</a></li>
+          </ul>
+        </li>
 
-  <li class="nav-item"><a href="#danh-gia">Đánh Giá</a></li>
+        <li class="nav-item">
+          <a class="main-link" href="#danhgia">Đánh Giá</a>
+        </li>
 
-</ul>
+      </ul>
+    </nav>
 
-</nav>
+    <!-- PAGE CONTAINER: Home is visible by default; other pages hidden -->
+    <div class="page-container">
 
-    <!-- Content Wrapper -->
-    <div class="content-wrapper">
+      <!-- HOME PAGE (scrollable content) -->
       <div class="page" id="page-home">
-      <!-- Hot Section with Side Image -->
-      <div class="hot-section reveal">
+        <section class="hot-section reveal">
+          <h2>🔥 HOT!!</h2>
 
-        <div class="hot-events-container reveal">
+          <div class="hot-events-container">
+            <article class="event-item reveal">
+              <div class="date-badge">30/10</div>
+              <div class="event-body">
+                <h3>"Ái Mết trước" - Được giảm 9...</h3>
+                <p>Sự kiện đặc biệt dành cho lớp 9A12</p>
+              </div>
+            </article>
 
-          <div class="hot-header reveal">
-
-            <span class="fire-icon">🔥</span>
-            <span>HOT!!</span>
+            <article class="event-item reveal">
+              <div class="date-badge">28/10</div>
+              <div class="event-body">
+                <h3>"lật đổ HHT" - Giang Đặng trên...</h3>
+                <p>Hoạt động vui chơi cuối tuần</p>
+              </div>
+            </article>
           </div>
-          
-          <div class="events-list">
-            <div class="event-item reveal">
-              <div class="event-date">
-                <span class="day">30</span>
-                <span class="month">/10</span>
-              </div>
-              <div class="event-details">
-                <div class="event-title">"Ái Mết trước" - Được giảm 9...</div>
-                <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
-              </div>
-            </div>
-            
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">28</span>
-                <span class="month">/10</span>
-              </div>
-              <div class="event-details">
-                <div class="event-title">"lật đổ HHT" - Giang Đặng trên...</div>
-                <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
-              </div>
-            </div>
-          </div>
+
+        </section>
+
+        <!-- some filler content so page is scrollable; section3 placed here -->
+        <section style="height:800px;"></section>
+
+        <!-- this is the section used as threshold for topbar/nav takeover -->
+        <div id="section3" class="blank-section"></div>
+
+        <section style="height:1200px;"></section>
+      </div>
+
+      <!-- GIỚI THIỆU PAGE -->
+      <div class="page" id="page-gioithieu" style="display:none;">
+        <div class="page-inner reveal">
+          <h2 id="gioithieu-chung">Giới thiệu chung lớp</h2>
+          <p>Thông tin chung... (Coming soon if empty)</p>
+
+          <h3 id="danh-sach-lop">Danh sách lớp</h3>
+          <p>Danh sách thành viên ...</p>
+
+          <h3 id="lien-he">Liên hệ & Credit</h3>
+          <p>Thông tin liên hệ ...</p>
         </div>
       </div>
 
-        <!-- Side Featured Image -->
-        <div class="side-image-container reveal">
-          <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image">
+      <!-- CỬA HÀNG PAGE -->
+      <div class="page" id="page-cuahang" style="display:none;">
+        <div class="page-inner reveal">
+          <h2 id="doanh-nhan-nhi">Doanh nhân nhí</h2>
+          <p>Shop content ...</p>
+
+          <h2 id="store-other">Other</h2>
+          <p>Coming Soon</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- SECTION 3: BLANK -->
-  <section class="blank-section" id="section3">
-    <p>Section 3 - Coming Soon</p>
-  </section>
+      <!-- TIN TỨC PAGE -->
+      <div class="page" id="page-tintuc" style="display:none;">
+        <div class="page-inner reveal">
+          <h2 id="hoat-dong">Hoạt động</h2>
+          <p>Hoạt động ...</p>
 
-  <div class="page" id="page-gioithieu" style="display:none;">
-  <h2>Giới Thiệu Chung Lớp</h2>
-  <div id="gioithieu-chung"></div>
+          <h2 id="thu-vien">Thư viện</h2>
+          <p>Tài liệu ...</p>
 
-  <h2>Danh Sách Lớp</h2>
-  <div id="danh-sach-lop"></div>
+          <h2 id="bai-dang">Bài đăng</h2>
+          <p>Danh sách bài ...</p>
+        </div>
+      </div>
 
-  <h2>Liên Hệ & Credit</h2>
-  <div id="lien-he"></div>
-</div>
+      <!-- ĐÁNH GIÁ PAGE -->
+      <div class="page" id="page-danhgia" style="display:none;">
+        <div class="page-inner reveal">
+          <h2 id="danh-gia">Đánh Giá</h2>
+          <p>Coming soon</p>
+        </div>
+      </div>
 
+    </div> <!-- .page-container -->
 
-<div class="page" id="page-cuahang" style="display:none;">
-  <h2>Doanh nhân nhí</h2>
-  <div id="doanh-nhan-nhi"></div>
+  </section> <!-- .content-section -->
 
-  <h2>Other</h2>
-  <p>Coming soon...</p>
-</div>
-
-
-<div class="page" id="page-tintuc" style="display:none;">
-  <h2>Hoạt động</h2>
-  <div id="hoat-dong"></div>
-
-  <h2>Thư viện</h2>
-  <div id="thu-vien"></div>
-
-  <h2>Bài đăng</h2>
-  <div id="bai-dang"></div>
-</div>
-
-
-<div class="page" id="page-danhgia" style="display:none;">
-  <h2>Đánh giá</h2>
-  <div id="danh-gia"></div>
-</div>
-
-  <script>
-// ===== HERO HEIGHT SYNC =====
-(function(){
-  const topBar = document.querySelector('.top-navbar') || document.getElementById('topNavbar');
-  const hero = document.getElementById('heroContainer') || document.querySelector('.hero-container');
-
-  if (!hero) return;
-
-  function syncHeroHeight(){
-    const topH = topBar ? Math.round(topBar.getBoundingClientRect().height) : 80;
-    document.documentElement.style.setProperty('--topbar-h', topH + 'px');
-    hero.style.height = `calc(100vh - ${topH}px)`;
-  }
-
-  syncHeroHeight();
-  window.addEventListener('resize', syncHeroHeight);
-})();
-</script>
-
-<script>
-// ===== TOP BAR HIDE + NAV TAKEOVER =====
-(function(){
-  const topNavbar = document.getElementById('topNavbar') || document.querySelector('.top-navbar');
-  const section3 = document.getElementById('section3') || document.querySelector('.blank-section');
-  const mainNav = document.querySelector('.main-nav');
-  const contentSection = document.getElementById('content') || document.querySelector('.content-section');
-
-  if (!mainNav || !section3) return;
-
-  let navPlaceholder = null;
-
-  function insertPlaceholder() {
-    if (navPlaceholder) return;
-    navPlaceholder = document.createElement('div');
-    navPlaceholder.className = 'nav-placeholder';
-    navPlaceholder.style.height = mainNav.getBoundingClientRect().height + 'px';
-    mainNav.parentNode.insertBefore(navPlaceholder, mainNav);
-  }
-  function removePlaceholder() {
-    if (!navPlaceholder) return;
-    navPlaceholder.remove();
-    navPlaceholder = null;
-  }
-
-  function handleScroll() {
-    const scrollY = window.scrollY;
-    const topbarH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 80;
-    const section3Top = section3.offsetTop - topbarH;
-
-    if (scrollY >= section3Top) {
-      topNavbar && topNavbar.classList.add('hidden');
-      if (!mainNav.classList.contains('fixed')) {
-        insertPlaceholder();
-        mainNav.classList.add('fixed');
-        contentSection && contentSection.classList.add('nav-fixed-padding');
-      }
-    } else {
-      topNavbar && topNavbar.classList.remove('hidden');
-      if (mainNav.classList.contains('fixed')) {
-        mainNav.classList.remove('fixed');
-        contentSection && contentSection.classList.remove('nav-fixed-padding');
-        setTimeout(removePlaceholder, 40);
-      }
-    }
-  }
-
-  window.addEventListener('scroll', handleScroll);
-})();
-</script>
-
-<!-- ✅ Add this block right here -->
-<script>
-// Show top bar when mouse touches top of screen
-document.addEventListener("mousemove", (e) => {
-  const threshold = 10; // px from top
-  const topNavbar = document.getElementById('topNavbar') || document.querySelector('.top-navbar');
-  if (e.clientY <= threshold) {
-    topNavbar && topNavbar.classList.remove("hidden");
-  }
-});
-</script>
-
-<script>
-// ===== REVEAL FADE ANIMATION =====
-document.addEventListener("DOMContentLoaded", () => {
-  const elements = document.querySelectorAll(".reveal");
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("show");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  elements.forEach(el => observer.observe(el));
-});
-</script>
-  <script>
-let hideTimer;
-const topNavbar = document.getElementById('topNavbar');
-const mainNav = document.querySelector('.main-nav');
-const navSpacer = document.getElementById('nav-spacer');
-
-function showTopBar(){
-  clearTimeout(hideTimer);
-  topNavbar.classList.remove("hidden");
-  
-  // Push nav down when bar is visible
-  navSpacer.style.height = mainNav.offsetHeight + "px";
-}
-
-function hideTopBar(){
-  hideTimer = setTimeout(()=>{
-    topNavbar.classList.add("hidden");
-    
-    // Remove space after fade
-    navSpacer.style.height = "0px";
-  }, 500);
-}
-
-// show when mouse hits very top
-document.addEventListener("mousemove", e=>{
-  if(e.clientY <= 10) showTopBar();
-});
-
-// hide when mouse leaves navbar OR after scrolling past hero
-topNavbar.addEventListener("mouseleave", hideTopBar);
-</script>
-  <script>
-// Clicking the main nav item = first submenu link
-document.querySelectorAll('.nav-item.dropdown > a').forEach(mainLink => {
-  mainLink.addEventListener('click', function(e){
-    const firstSub = this.parentElement.querySelector('.dropdown-menu a:not(.coming-soon)');
-    if(firstSub){
-      e.preventDefault();
-      firstSub.click();
-    }
-  });
-});
-</script>
-
+  <!-- Link to script file -->
+  <script src="script.js"></script>
 </body>
 </html>
