@@ -566,10 +566,27 @@
 <body>
   <!-- TOP NAVBAR (STICKY) -->
   <nav class="top-navbar" id="topNavbar">
-    <div class="logo">
-      <img src="9A12-removebg.png" alt="9A12 logo" class="logo-img">
-      <span>9A12</span>
-    </div>
+   <!-- Top-left brand (replace your existing .logo block with this) -->
+<div class="logo" aria-label="9A12 logo">
+  <!-- Primary image (use assets/ folder for consistency) -->
+  <img src="assets/9A12-removebg.png"
+       alt="9A12 logo"
+       class="logo-img"
+       id="logoImg"
+       onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+
+  <!-- Fallback (hidden by default) — simple SVG that always works -->
+  <div id="logoFallback" class="logo-fallback" style="display:none; align-items:center; gap:8px;">
+    <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true" role="img">
+      <circle cx="50" cy="50" r="45" fill="#bdbdbd"/>
+      <text x="50" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="38" fill="#222">9</text>
+    </svg>
+    <span class="brand-text">9A12</span>
+  </div>
+
+  <!-- Keep your text label so the brand is always visible -->
+  <span class="brand-text" style="margin-left:8px;">9A12</span>
+</div>
     
     <div class="search-bar">
       <input type="text" placeholder="what do you want to find">
