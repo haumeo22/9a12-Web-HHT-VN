@@ -656,7 +656,101 @@
   align-items: center;
   gap: 8px;
 }
-    
+    /* ===== HOT rotator & layout ===== */
+:root { --event-h: 96px; --event-gap: 15px; --hot-interval: 20000ms; }
+
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--event-gap);
+  max-height: calc(var(--event-h) * 3 + var(--event-gap) * 2); /* show 3 items visually */
+  overflow: hidden;
+}
+
+/* fixed-ish item size so the layout is stable */
+.event-item {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 14px;
+  min-height: var(--event-h);
+  transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s, border-color .18s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Title should wrap instead of being cut off */
+.event-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.1;
+  white-space: normal;     /* allow wrap */
+  word-break: break-word;  /* break long words if needed */
+}
+
+/* smaller desc */
+.event-desc { color:#666; font-size:13px; margin-top:6px; }
+
+/* event-date */
+.event-date { min-width:80px; text-align:center; background:linear-gradient(135deg,#ff6b6b,#ff8e53); color:#fff; padding:10px 12px; border-radius:10px; font-weight:700; }
+
+/* Active HOT item styling (bigger, glow, pushes others) */
+.event-item.active-hot {
+  transform: scale(1.02) translateX(6px); /* slight push to right */
+  z-index: 5;
+  border-color: rgba(209,143,0,0.35);
+  box-shadow: 0 12px 36px rgba(209,143,0,0.10);
+}
+
+/* featured image viewport + enter/exit animations */
+.featured-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* featured image base */
+.side-featured-image, .featured-viewport img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* animation classes used by JS */
+.featured-enter {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s;
+}
+.featured-enter.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+.featured-exit {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s;
+}
+.featured-exit.hide {
+  transform: translateX(-40%);
+  opacity: 0;
+}
+
+/* ensure the right column width */
+.side-image-container { flex: 0 0 420px; }
+@media (max-width: 960px) {
+  .events-list { max-height: none; overflow: visible; }
+  .side-image-container { width: 100%; flex: 0 0 auto; order: 3; margin-top: 16px; }
+  .event-item { min-height: auto; }
+}
+
   </style>
 </head>
 <body>
@@ -771,50 +865,66 @@
     <!-- Content Wrapper -->
     <div class="content-wrapper">
       <div class="page" id="page-home">
-      <!-- Hot Section with Side Image -->
-      <div class="hot-section reveal">
 
-        <div class="hot-events-container reveal">
+        <!-- Hot Section with Side Image (events left, featured image right) -->
+        <div class="hot-section reveal">
 
-          <div class="hot-header reveal">
+          <div class="hot-events-container reveal">
+            <div class="hot-header reveal">
+              <span class="fire-icon">🔥</span>
+              <span>HOT!!</span>
+            </div>
 
-            <span class="fire-icon">🔥</span>
-            <span>HOT!!</span>
-          </div>
-          
-          <div class="events-list">
-            <div class="event-item reveal">
-              <div class="event-date">
-                <span class="day">30</span>
-                <span class="month">/10</span>
+            <!-- EVENTS LIST (left) - show up to 3 at once visually -->
+            <div class="events-list" id="eventsList">
+              <div class="event-item reveal" data-image="assets/IMG_2873.JPG" data-anchor="hanhtrinh-1">
+                <div class="event-date">
+                  <span class="day">30</span>
+                  <span class="month">/10</span>
+                </div>
+                <div class="event-details">
+                  <div class="event-title">Ái Mết trước</div>
+                  <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
+                </div>
               </div>
-              <div class="event-details">
-                <div class="event-title">"Ái Mết trước" - Được giảm 9...</div>
-                <div class="event-desc">Sự kiện đặc biệt dành cho lớp 9A12</div>
+
+              <div class="event-item reveal" data-image="assets/IMG_2874.JPG" data-anchor="hanhtrinh-2">
+                <div class="event-date">
+                  <span class="day">28</span>
+                  <span class="month">/10</span>
+                </div>
+                <div class="event-details">
+                  <div class="event-title">lật đổ HHT</div>
+                  <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
+                </div>
+              </div>
+
+              <div class="event-item reveal" data-image="assets/IMG_2875.JPG" data-anchor="hanhtrinh-3">
+                <div class="event-date">
+                  <span class="day">15</span>
+                  <span class="month">/09</span>
+                </div>
+                <div class="event-details">
+                  <div class="event-title">Dã ngoại cuối năm</div>
+                  <div class="event-desc">Kỷ niệm và ảnh nhóm.</div>
+                </div>
               </div>
             </div>
-            
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">28</span>
-                <span class="month">/10</span>
-              </div>
-              <div class="event-details">
-                <div class="event-title">"lật đổ HHT" - Giang Đặng trên...</div>
-                <div class="event-desc">Hoạt động vui chơi cuối tuần</div>
-              </div>
+          </div>
+
+          <!-- SIDE FEATURED IMAGE (right) -->
+          <div class="side-image-container reveal" id="featuredBox">
+            <div class="featured-viewport">
+              <!-- initial featured image (script will swap this) -->
+              <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image" id="featuredImg">
             </div>
           </div>
-        </div>
-      </div>
 
-        <!-- Side Featured Image -->
-        <div class="side-image-container reveal">
-          <img src="assets/IMG_2873.JPG" alt="Featured Activity" class="side-featured-image">
-        </div>
-      </div>
-    </div>
-  </section>
+        </div> <!-- /.hot-section -->
+
+      </div> <!-- /.page -->
+    </div> <!-- /.content-wrapper -->
+
 
   <!-- SECTION 3: BLANK -->
   <section class="blank-section" id="section3">
@@ -1065,6 +1175,121 @@
       }
     }, 500);
   });
+  /* ===== HOT image rotator / highlight behavior ===== */
+(function setupHotRotator(){
+  const eventsList = document.getElementById('eventsList');
+  const items = eventsList ? Array.from(eventsList.querySelectorAll('.event-item')) : [];
+  const featuredBox = document.getElementById('featuredBox');
+  const featuredImg = document.getElementById('featuredImg');
+  if (!items.length || !featuredBox || !featuredImg) return;
+
+  let current = 0;
+  const intervalMs = 20000; // 20 seconds per rotation
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // initialize first active
+  function setActive(index, animate=true){
+    index = index % items.length;
+    items.forEach((it, i) => {
+      it.classList.toggle('active-hot', i === index);
+    });
+
+    // update featured image with tween (unless reduced-motion)
+    const newSrc = items[index].getAttribute('data-image') || featuredImg.src;
+    if (!newSrc) return;
+
+    if (prefersReduced || !animate) {
+      featuredImg.src = newSrc;
+      featuredImg.classList.remove('featured-enter','featured-exit','show','hide');
+      return;
+    }
+
+    // animate: create entering image, slide it in, remove old
+    const entering = document.createElement('img');
+    entering.src = newSrc;
+    entering.className = 'side-featured-image featured-enter';
+    entering.alt = items[index].querySelector('.event-title')?.textContent || 'Featured';
+
+    const viewport = featuredBox.querySelector('.featured-viewport') || featuredBox;
+    // append entering
+    viewport.appendChild(entering);
+
+    // force reflow then add .show to trigger transition
+    requestAnimationFrame(()=> {
+      entering.classList.add('show');
+    });
+
+    // mark current existing image as exit
+    const existing = viewport.querySelector('img.side-featured-image:not(.featured-enter)');
+    if (existing) {
+      existing.classList.add('featured-exit');
+      // cause it to exit
+      requestAnimationFrame(()=> existing.classList.add('hide'));
+      // remove after transition
+      setTimeout(()=> {
+        if (existing.parentNode) existing.parentNode.removeChild(existing);
+      }, 520);
+    }
+
+    // after animation, remove helper classes from entering but keep it as main image
+    setTimeout(()=> {
+      entering.classList.remove('featured-enter','show');
+      entering.classList.remove('side-featured-image'); // keep base class? we want it as the main image
+      // convert to main image by replacing id
+      entering.id = 'featuredImg';
+    }, 540);
+  }
+
+  // rotate forward
+  function rotateNext(){
+    current = (current + 1) % items.length;
+    setActive(current, true);
+  }
+
+  // clicking an item: navigate to tinTuc page and scroll inside
+  items.forEach((it, idx) => {
+    it.addEventListener('click', (e) => {
+      const anchor = it.getAttribute('data-anchor');
+      // visual select
+      setActive(idx, true);
+      // navigate to Tin Tức page then scroll into the anchor if present
+      // showPage is in the outer script: call it if available
+      if (typeof showPage === 'function') {
+        showPage('#tinTuc', true);
+        setTimeout(()=> {
+          if (anchor) {
+            const el = document.getElementById(anchor);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 160);
+      } else {
+        // fallback: just scroll to section id
+        if (anchor) {
+          const el = document.getElementById(anchor);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+
+  // initial
+  setActive(current, false);
+
+  if (!prefersReduced) {
+    // interval rotation
+    let rotTimer = setInterval(rotateNext, intervalMs);
+
+    // pause on hover of events list or featured box
+    [eventsList, featuredBox].forEach(el=>{
+      el.addEventListener('mouseenter', ()=> rotTimer && clearInterval(rotTimer));
+      el.addEventListener('mouseleave', ()=> {
+        rotTimer && clearInterval(rotTimer);
+        rotTimer = setInterval(rotateNext, intervalMs);
+      });
+    });
+  }
+})();
+
 
 })();
 </script>
