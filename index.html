@@ -706,49 +706,40 @@
   box-shadow: 0 12px 36px rgba(209,143,0,0.10);
 }
 
-/* featured image viewport + enter/exit animations */
-.featured-viewport {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 12px;
-}
+/* Featured image: single-box slide animation (same size/place) */
+.side-image-container { flex: 0 0 420px; /* same fixed width as before */ }
+.featured-viewport { position: relative; width: 100%; overflow: hidden; border-radius: 12px; }
 
-/* featured image base */
-.side-featured-image, .featured-viewport img {
+/* base img */
+.side-featured-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
   object-fit: cover;
   border-radius: 8px;
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s;
+  will-change: transform, opacity;
 }
 
-/* animation classes used by JS */
-.featured-enter {
-  transform: translateX(100%);
-  opacity: 0;
-  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s;
-}
-.featured-enter.show {
-  transform: translateX(0);
-  opacity: 1;
-}
-.featured-exit {
-  transform: translateX(0);
-  opacity: 1;
-  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s;
-}
-.featured-exit.hide {
+/* slide-out: current image slides left and fades */
+.side-featured-image.slide-out {
   transform: translateX(-40%);
   opacity: 0;
 }
 
-/* ensure the right column width */
-.side-image-container { flex: 0 0 420px; }
-@media (max-width: 960px) {
-  .events-list { max-height: none; overflow: visible; }
-  .side-image-container { width: 100%; flex: 0 0 auto; order: 3; margin-top: 16px; }
-  .event-item { min-height: auto; }
+/* slide-in: after src swap, image comes from right -> center */
+.side-featured-image.slide-in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* when we set up the incoming position (move it just offscreen to the right)
+   we'll toggle / remove this quickly to trigger the transition */
+.side-featured-image.prep-right {
+  transform: translateX(100%);
+  opacity: 0;
 }
 
   </style>
